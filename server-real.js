@@ -230,22 +230,68 @@ app.post('/api/ai/classify', async (req, res) => {
 // Chatbot IA
 app.post('/api/ai/chat', async (req, res) => {
     try {
-        const { message, context = [] } = req.body;
+        const { message, context } = req.body;
         
-        if (!message) {
-            return res.status(400).json({ 
-                success: false, 
-                error: 'Message requis' 
+        // Simulation locale si pas de clé OpenAI
+        if (OPENAI_API_KEY === 'demo_key') {
+            const response = simulateChatbotResponse(message);
+            return res.json({
+                success: true,
+                response: response.response,
+                confidence: response.confidence,
+                intent: response.intent
             });
         }
-
-        const result = generateChatResponse(message);
         
-        res.json(result);
+        // CORRIGÉ: Vraie intégration OpenAI
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${OPENAI_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: 'gpt-3.5-turbo',
+                messages: [
+                    {
+                        role: 'system',
+                        content: 'Tu es un assistant IA spécialisé en gestion immobilière. Tu aides les locataires avec leurs problèmes de maintenance. Sois concis, utile et professionnel. Détecte les urgences et donne des conseils pratiques.'
+                    },
+                    ...(context || [] ),
+                    {
+                        role: 'user',
+                        content: message
+                    }
+                ],
+                max_tokens: 150,
+                temperature: 0.7
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.choices && data.choices[0]) {
+            res.json({
+                success: true,
+                response: data.choices[0].message.content,
+                confidence: 95,
+                intent: detectIntent(message)
+            });
+        } else {
+            throw new Error('Réponse OpenAI invalide');
+        }
+        
     } catch (error) {
-        res.status(500).json({ 
-            success: false, 
-            error: 'Erreur du chatbot IA' 
+        console.error('Erreur chatbot:', error);
+        
+        // Fallback en cas d'erreur
+        const fallbackResponse = simulateChatbotResponse(req.body.message || '');
+        res.json({
+            success: true,
+            response: fallbackResponse.response,
+            confidence: fallbackResponse.confidence,
+            intent: fallbackResponse.intent,
+            source: 'fallback'
         });
     }
 });
