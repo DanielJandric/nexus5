@@ -157,59 +157,83 @@
         });
 
         // Envoi de message
-        async function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const message = input.value.trim();
+       async function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    
+    if (!message || isTyping) return;
+    
+    // Ajouter message utilisateur
+    addMessage(message, 'user');
+    input.value = '';
+    
+    // Afficher indicateur de frappe
+    const typingIndicator = document.getElementById('typingIndicator');
+    if (typingIndicator) {
+        isTyping = true;
+        typingIndicator.style.display = 'block';
+        
+        // Désactiver bouton d'envoi pendant le chargement
+        const sendBtn = document.getElementById('sendBtn');
+        if (sendBtn) sendBtn.disabled = true;
+    }
+    
+    try {
+        // CORRECTION: Appel API avec historique de conversation
+        const response = await fetch('/api/ai/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: message,
+                context: chatHistory || [] // Envoyer l'historique pour le contexte
+            })
+        });
+        
+        const result = await response.json();
+        
+        // Masquer indicateur de frappe
+        if (typingIndicator) {
+            isTyping = false;
+            typingIndicator.style.display = 'none';
             
-            if (!message || isTyping) return;
-            
-            // Ajouter le message utilisateur
-            addMessage(message, 'user');
-            input.value = '';
-            
-            // Afficher l'indicateur de frappe
-            showTypingIndicator();
-            
-            try {
-                // Appel à l'API chatbot
-                const response = await fetch('/api/ai/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: message,
-                        context: conversationContext
-                    })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    // Mettre à jour le contexte
-                    conversationContext = result.context || [];
-                    
-                    // Ajouter la réponse de l'IA
-                    setTimeout(() => {
-                        hideTypingIndicator();
-                        addMessage(result.response, 'bot', {
-                            intent: result.intent,
-                            confidence: result.confidence,
-                            actions: result.actions,
-                            escalate: result.escalate
-                        });
-                    }, 1500);
-                } else {
-                    hideTypingIndicator();
-                    addMessage("Désolé, je rencontre un problème technique. Un agent va vous aider.", 'bot');
-                }
-                
-            } catch (error) {
-                console.error('Erreur chatbot:', error);
-                hideTypingIndicator();
-                addMessage("Erreur de connexion. Veuillez réessayer.", 'bot');
-            }
+            // Réactiver bouton d'envoi
+            const sendBtn = document.getElementById('sendBtn');
+            if (sendBtn) sendBtn.disabled = false;
         }
+        
+        if (result.response) {
+            // Ajouter réponse IA avec métadonnées
+            addMessage(result.response, 'bot', {
+                confidence: result.confidence,
+                intent: result.intent
+            });
+        } else {
+            addMessage('Désolé, je n\'ai pas pu traiter votre demande. Veuillez réessayer.', 'bot');
+        }
+        
+    } catch (error) {
+        console.error('Erreur:', error);
+        
+        // Masquer indicateur de frappe en cas d'erreur
+        if (typingIndicator) {
+            isTyping = false;
+            typingIndicator.style.display = 'none';
+            
+            // Réactiver bouton d'envoi
+            const sendBtn = document.getElementById('sendBtn');
+            if (sendBtn) sendBtn.disabled = false;
+        }
+        
+        // Fallback en cas d'erreur de connexion
+        addMessage('Désolé, je rencontre un problème technique. Veuillez réessayer dans quelques instants.', 'bot', {
+            confidence: 70,
+            intent: 'error'
+        });
+    }
+}
+
 
         // Envoi de message rapide
         function sendQuickMessage(message) {
