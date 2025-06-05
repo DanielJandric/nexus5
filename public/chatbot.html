@@ -1,356 +1,93 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assistant IA - Chatbot Intelligent</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .chat-container { height: calc(100vh - 200px); }
-        .message-user { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .message-bot { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-        .typing-indicator { animation: pulse 1.5s infinite; }
-        .suggestion-btn { transition: all 0.3s ease; }
-        .suggestion-btn:hover { transform: translateY(-2px); }
-        .troubleshooting-step { animation: slideIn 0.5s ease-out; }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        .mobile-first { max-width: 480px; margin: 0 auto; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chatbot IA - Widget Flottant</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-50">
-    <!-- Navigation -->
-    <nav class="gradient-bg shadow-lg">
-        <div class="mobile-first px-4 py-3">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <button onclick="window.location.href='index.html'" class="text-white mr-4">
-                        <i class="fas fa-arrow-left text-lg"></i>
-                    </button>
-                    <i class="fas fa-robot text-white text-xl mr-3"></i>
-                    <h1 class="text-white text-lg font-bold">Assistant IA</h1>
-                </div>
-                <div class="flex items-center">
-                    <div class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
-                    <span class="text-white text-sm">IA Active</span>
-                </div>
-            </div>
-        </div>
-    </nav>
+<body class="bg-gray-100 min-h-screen">
 
-    <!-- Contenu Principal -->
-    <div class="mobile-first px-4 py-6">
-        <!-- Introduction IA -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <div class="flex items-center mb-4">
-                <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mr-4">
-                    <i class="fas fa-brain text-white text-xl"></i>
-                </div>
-                <div>
-                    <h2 class="text-lg font-bold text-gray-900">Assistant IA Intelligent</h2>
-                    <p class="text-gray-600 text-sm">Résolution automatique et support avancé</p>
-                </div>
-            </div>
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h3 class="font-medium text-blue-900 mb-2">🤖 Capacités de l'IA :</h3>
-                <ul class="text-sm text-blue-800 space-y-1">
-                    <li>• Compréhension du langage naturel</li>
-                    <li>• Diagnostic automatique des problèmes</li>
-                    <li>• Guides de dépannage étape par étape</li>
-                    <li>• Escalade intelligente vers support humain</li>
-                </ul>
-            </div>
-        </div>
+  <!-- Bouton flottant pour ouvrir le chatbot -->
+  <button id="chatToggleBtn" onclick="toggleChatbot()" class="fixed bottom-6 right-6 bg-gradient-to-r from-purple-500 to-blue-500 text-white w-14 h-14 rounded-full shadow-lg text-2xl flex items-center justify-center z-50">
+    💬
+  </button>
 
-        <!-- Zone de Chat -->
-        <div class="bg-white rounded-lg shadow-md mb-4">
-            <div class="p-4 border-b border-gray-200">
-                <div class="flex items-center justify-between">
-                    <h3 class="font-semibold text-gray-900">
-                        <i class="fas fa-comments mr-2 text-blue-600"></i>Conversation IA
-                    </h3>
-                    <button onclick="clearChat()" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-trash text-sm"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Messages -->
-            <div id="chatMessages" class="chat-container overflow-y-auto p-4">
-                <!-- Message d'accueil -->
-                <div class="flex items-start mb-4">
-                    <div class="w-8 h-8 message-bot rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">
-                        🤖
-                    </div>
-                    <div class="bg-gray-100 rounded-lg p-3 max-w-xs">
-                        <p class="text-sm">Bonjour ! Je suis votre assistant IA intelligent. Je peux vous aider à diagnostiquer et résoudre de nombreux problèmes automatiquement. Comment puis-je vous assister ?</p>
-                        <p class="text-xs text-gray-500 mt-1">Maintenant</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Suggestions Rapides -->
-        <div id="quickSuggestions" class="mb-4">
-            <h4 class="text-sm font-medium text-gray-700 mb-3">💡 Suggestions rapides :</h4>
-            <div class="grid grid-cols-2 gap-2">
-                <button onclick="sendQuickMessage('Mon robinet fuit')" class="suggestion-btn bg-blue-100 text-blue-800 p-3 rounded-lg text-sm font-medium">
-                    <i class="fas fa-tint mr-2"></i>Fuite d'eau
-                </button>
-                <button onclick="sendQuickMessage('Plus d\'électricité')" class="suggestion-btn bg-yellow-100 text-yellow-800 p-3 rounded-lg text-sm font-medium">
-                    <i class="fas fa-bolt mr-2"></i>Panne électrique
-                </button>
-                <button onclick="sendQuickMessage('Pas de chauffage')" class="suggestion-btn bg-red-100 text-red-800 p-3 rounded-lg text-sm font-medium">
-                    <i class="fas fa-fire mr-2"></i>Problème chauffage
-                </button>
-                <button onclick="sendQuickMessage('Où en sont mes demandes ?')" class="suggestion-btn bg-green-100 text-green-800 p-3 rounded-lg text-sm font-medium">
-                    <i class="fas fa-list mr-2"></i>Mes demandes
-                </button>
-            </div>
-        </div>
-
-        <!-- Zone de saisie -->
-        <div class="bg-white rounded-lg shadow-md p-4">
-            <div class="flex items-center space-x-3">
-                <input type="text" id="messageInput" placeholder="Décrivez votre problème en détail..." class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm">
-                <button onclick="sendMessage()" class="bg-gradient-to-r from-purple-500 to-blue-500 text-white p-2 rounded-lg">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
-            <div class="flex items-center mt-3 text-xs text-gray-500">
-                <i class="fas fa-info-circle mr-1"></i>
-                <span>L'IA analyse votre message et propose des solutions automatiques</span>
-            </div>
-        </div>
+  <!-- Fenêtre chatbot -->
+  <div id="chatbotWidget" class="fixed bottom-24 right-6 w-80 max-h-[500px] bg-white shadow-2xl rounded-xl overflow-hidden flex flex-col z-50 hidden">
+    <!-- En-tête -->
+    <div class="bg-gradient-to-r from-purple-500 to-blue-500 text-white p-3 flex justify-between items-center">
+      <h2 class="text-base font-semibold">Assistant IA</h2>
+      <button onclick="toggleChatbot()" class="text-white text-xl">&times;</button>
     </div>
 
-    <!-- Indicateur de frappe -->
-    <div id="typingIndicator" class="hidden mobile-first px-4">
-        <div class="bg-white rounded-lg shadow-md p-4">
-            <div class="flex items-center">
-                <div class="w-8 h-8 message-bot rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">
-                    🤖
-                </div>
-                <div class="typing-indicator">
-                    <span class="text-gray-600 text-sm">L'IA analyse votre demande...</span>
-                </div>
-            </div>
-        </div>
+    <!-- Zone messages -->
+    <div id="chatMessages" class="flex-1 overflow-y-auto p-3 space-y-2 text-sm"></div>
+
+    <!-- Zone de saisie -->
+    <div class="border-t p-2 flex gap-2">
+      <input id="messageInput" type="text" placeholder="Votre message..." class="flex-1 border border-gray-300 rounded px-3 py-1 text-sm">
+      <button onclick="sendMessage()" class="bg-purple-600 text-white px-4 py-1 rounded hover:bg-purple-700">Envoyer</button>
     </div>
+  </div>
 
-    <script>
-        // Variables globales
-        let chatHistory = [];
-        let isTyping = false;
+  <script>
+    let chatHistory = [];
 
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', function() {
-            const input = document.getElementById('messageInput');
-            if (input) {
-                input.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        sendMessage();
-                    }
-                });
-            }
+    function toggleChatbot() {
+      const widget = document.getElementById('chatbotWidget');
+      widget.classList.toggle('hidden');
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value.trim();
+      if (!message) return;
+
+      addMessage(message, 'user');
+      input.value = '';
+
+      try {
+        const response = await fetch('/api/ai/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message, context: chatHistory })
         });
 
-        // FONCTION CORRIGÉE: Envoi de message avec intégration OpenAI
-        async function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const message = input.value.trim();
-            
-            if (!message || isTyping) return;
-            
-            // Ajouter le message utilisateur
-            addMessage(message, 'user');
-            input.value = '';
-            
-            // Afficher l'indicateur de frappe
-            showTypingIndicator();
-            
-            try {
-                // CORRECTION: Appel API avec historique de conversation
-                const response = await fetch('/api/ai/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: message,
-                        context: chatHistory
-                    })
-                });
-                
-                const result = await response.json();
-                
-                // Masquer l'indicateur de frappe
-                hideTypingIndicator();
-                
-                if (result.success && result.response) {
-                    // Ajouter la réponse de l'IA
-                    addMessage(result.response, 'bot', {
-                        confidence: result.confidence,
-                        intent: result.intent
-                    });
-                } else {
-                    // Message d'erreur générique
-                    addMessage('Désolé, je n\'ai pas pu traiter votre demande. Veuillez réessayer.', 'bot');
-                }
-                
-            } catch (error) {
-                console.error('Erreur chatbot:', error);
-                hideTypingIndicator();
-                
-                // Fallback en cas d'erreur de connexion
-                addMessage('Désolé, je rencontre un problème technique. Veuillez réessayer dans quelques instants.', 'bot', {
-                    confidence: 70,
-                    intent: 'error'
-                });
-            }
+        const data = await response.json();
+        if (data.success) {
+          addMessage(data.response, 'bot');
+        } else {
+          addMessage("Désolé, je n'ai pas pu traiter votre demande.", 'bot');
         }
+      } catch (error) {
+        addMessage("Erreur de connexion à l'IA.", 'bot');
+      }
+    }
 
-        // FONCTION CORRIGÉE: Ajouter message à la conversation
-        function addMessage(content, sender, metadata = {}) {
-            const messagesContainer = document.getElementById('chatMessages');
-            
-            if (!messagesContainer) {
-                console.error('Container de messages non trouvé');
-                return;
-            }
-            
-            // Créer le message
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'flex items-start mb-4';
-            
-            const timestamp = new Date().toLocaleTimeString('fr-FR', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-            });
-            
-            if (sender === 'user') {
-                // Message utilisateur (à droite)
-                messageDiv.innerHTML = `
-                    <div class="flex-1"></div>
-                    <div class="max-w-xs">
-                        <div class="message-user text-white rounded-lg p-3">
-                            <p class="text-sm">${content}</p>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1 text-right">${timestamp}</p>
-                    </div>
-                    <div class="w-8 h-8 message-user rounded-full flex items-center justify-center text-white text-sm font-bold ml-3">
-                        👤
-                    </div>
-                `;
-            } else {
-                // Message bot (à gauche)
-                messageDiv.innerHTML = `
-                    <div class="w-8 h-8 message-bot rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">
-                        🤖
-                    </div>
-                    <div class="bg-gray-100 rounded-lg p-3 max-w-xs">
-                        <p class="text-sm">${content}</p>
-                        <div class="flex items-center justify-between mt-1">
-                            <p class="text-xs text-gray-500">${timestamp}</p>
-                            ${metadata.confidence ? `<span class="text-xs text-blue-600">Confiance: ${metadata.confidence}%</span>` : ''}
-                        </div>
-                    </div>
-                `;
-            }
-            
-            // Ajouter à l'interface
-            messagesContainer.appendChild(messageDiv);
-            
-            // Ajouter à l'historique pour OpenAI
-            chatHistory.push({
-                role: sender === 'user' ? 'user' : 'assistant',
-                content: content
-            });
-            
-            // Limiter l'historique à 10 messages
-            if (chatHistory.length > 10) {
-                chatHistory = chatHistory.slice(-10);
-            }
-            
-            // Scroll vers le bas
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
+    function addMessage(content, sender) {
+      const container = document.getElementById('chatMessages');
+      const bubble = document.createElement('div');
+      bubble.className = `p-2 rounded-lg ${sender === 'user' ? 'bg-blue-100 self-end text-right' : 'bg-gray-100 self-start'}`;
+      bubble.innerHTML = `<p>${content}</p>`;
+      container.appendChild(bubble);
+      container.scrollTop = container.scrollHeight;
 
-        // Message rapide
-        function sendQuickMessage(message) {
-            const input = document.getElementById('messageInput');
-            if (input) {
-                input.value = message;
-                sendMessage();
-            }
-        }
+      chatHistory.push({
+        role: sender === 'user' ? 'user' : 'assistant',
+        content: content
+      });
 
-        // Afficher indicateur de frappe
-        function showTypingIndicator() {
-            isTyping = true;
-            const indicator = document.getElementById('typingIndicator');
-            if (indicator) {
-                indicator.classList.remove('hidden');
-            }
-        }
+      if (chatHistory.length > 10) chatHistory = chatHistory.slice(-10);
+    }
 
-        // Masquer indicateur de frappe
-        function hideTypingIndicator() {
-            isTyping = false;
-            const indicator = document.getElementById('typingIndicator');
-            if (indicator) {
-                indicator.classList.add('hidden');
-            }
-        }
-
-        // Effacer la conversation
-        function clearChat() {
-            if (confirm('Êtes-vous sûr de vouloir effacer la conversation ?')) {
-                chatHistory = [];
-                const messagesContainer = document.getElementById('chatMessages');
-                if (messagesContainer) {
-                    messagesContainer.innerHTML = `
-                        <div class="flex items-start mb-4">
-                            <div class="w-8 h-8 message-bot rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">
-                                🤖
-                            </div>
-                            <div class="bg-gray-100 rounded-lg p-3 max-w-xs">
-                                <p class="text-sm">Bonjour ! Je suis votre assistant IA intelligent. Je peux vous aider à diagnostiquer et résoudre de nombreux problèmes automatiquement. Comment puis-je vous assister ?</p>
-                                <p class="text-xs text-gray-500 mt-1">Maintenant</p>
-                            </div>
-                        </div>
-                    `;
-                }
-            }
-        }
-    </script>
-    <!-- Bouton flottant -->
-<button id="chatToggleBtn" onclick="toggleChatbot()" class="fixed bottom-6 right-6 bg-gradient-to-r from-purple-500 to-blue-500 text-white w-14 h-14 rounded-full shadow-lg text-2xl flex items-center justify-center z-50">
-  💬
-</button>
-
-<!-- Fenêtre chatbot -->
-<div id="chatbotWidget" class="fixed bottom-24 right-6 w-96 max-h-[600px] bg-white shadow-2xl rounded-xl overflow-hidden flex flex-col z-50 hidden">
-  <!-- En-tête -->
-  <div class="bg-gradient-to-r from-purple-500 to-blue-500 text-white p-4 flex justify-between items-center">
-    <h2 class="text-lg font-bold">Assistant IA</h2>
-    <button onclick="toggleChatbot()" class="text-white text-xl">&times;</button>
-  </div>
-
-  <!-- Zone messages -->
-  <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-2 text-sm"></div>
-
-  <!-- Zone de saisie -->
-  <div class="border-t p-3 flex gap-2">
-    <input id="messageInput" type="text" placeholder="Votre message..." class="flex-1 border rounded px-3 py-2 text-sm">
-    <button onclick="sendMessage()" class="bg-purple-600 text-white px-4 rounded hover:bg-purple-700">Envoyer</button>
-  </div>
-</div>
-
+    document.addEventListener('DOMContentLoaded', () => {
+      const input = document.getElementById('messageInput');
+      input.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') sendMessage();
+      });
+    });
+  </script>
 </body>
 </html>
-
