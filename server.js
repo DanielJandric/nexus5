@@ -1,5 +1,4 @@
 require('dotenv').config();
-app.use(express.static('public'));
 const express = require('express');
 const cors = require('cors');
 const OpenAI = require('openai');
@@ -7,16 +6,15 @@ const OpenAI = require('openai');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// ✅ Initialisation correcte et unique d’OpenAI
+// Ordre correct
+app.use(express.static('public'));
+app.use(cors());
+app.use(express.json());
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Middlewares
-app.use(cors());
-app.use(express.json());
-
-// Route de l'IA
 app.post('/api/ai/chat', async (req, res) => {
   const { message, context = [] } = req.body;
 
@@ -35,15 +33,15 @@ app.post('/api/ai/chat', async (req, res) => {
     console.error('Erreur OpenAI:', error);
     res.status(500).json({
       success: false,
-      error: 'Erreur lors de la génération avec OpenAI.',
+      error: 'Erreur côté serveur IA.',
     });
   }
 });
 
-// Démarrage du serveur
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
+
 app.listen(port, () => {
   console.log(`✅ Serveur lancé sur http://localhost:${port}`);
-});
-app.get('/', (req, res) => {
-  res.send('🤖 Serveur IA opérationnel ! Utilisez POST /api/ai/chat pour dialoguer.');
 });
