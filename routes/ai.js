@@ -1,4 +1,29 @@
-const express = require('express');
+app.post('/tickets', async (req, res) => {
+    try {
+        const { title, description } = req.body;
+        
+        // Classification IA simulée
+        const categories = ['Plomberie', 'Électricité', 'Chauffage', 'Serrurerie', 'Autre'];
+        const category = categories[Math.floor(Math.random() * categories.length)];
+        const priority = Math.floor(Math.random() * 5) + 1;
+        const confidence = Math.floor(Math.random() * 10) + 90;
+        
+        const result = await pool.query(
+            'INSERT INTO tickets (title, description, category, priority, status) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [title, description, category, priority, 'nouveau']
+        );
+        
+        const ticket = result.rows[0];
+        
+        res.json({
+            ...ticket,
+            ai_confidence: confidence,
+            success: true
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});const express = require('express');
 const OpenAI = require('openai');
 const { pool } = require('../config/database');
 const { authenticateToken } = require('../middleware/auth');
