@@ -328,6 +328,29 @@
             }
         }
     </script>
+    <!-- Bouton flottant -->
+<button id="chatToggleBtn" onclick="toggleChatbot()" class="fixed bottom-6 right-6 bg-gradient-to-r from-purple-500 to-blue-500 text-white w-14 h-14 rounded-full shadow-lg text-2xl flex items-center justify-center z-50">
+  💬
+</button>
+
+<!-- Fenêtre chatbot -->
+<div id="chatbotWidget" class="fixed bottom-24 right-6 w-96 max-h-[600px] bg-white shadow-2xl rounded-xl overflow-hidden flex flex-col z-50 hidden">
+  <!-- En-tête -->
+  <div class="bg-gradient-to-r from-purple-500 to-blue-500 text-white p-4 flex justify-between items-center">
+    <h2 class="text-lg font-bold">Assistant IA</h2>
+    <button onclick="toggleChatbot()" class="text-white text-xl">&times;</button>
+  </div>
+
+  <!-- Zone messages -->
+  <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-2 text-sm"></div>
+
+  <!-- Zone de saisie -->
+  <div class="border-t p-3 flex gap-2">
+    <input id="messageInput" type="text" placeholder="Votre message..." class="flex-1 border rounded px-3 py-2 text-sm">
+    <button onclick="sendMessage()" class="bg-purple-600 text-white px-4 rounded hover:bg-purple-700">Envoyer</button>
+  </div>
+</div>
+
 </body>
 </html>
 
