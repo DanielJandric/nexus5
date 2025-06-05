@@ -7,13 +7,9 @@ startCommand = "npm start"
 healthcheckPath = "/api/health"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10
+restartPolicyMaxRetries = 3
 
-[env]
+[environments.production.variables]
 NODE_ENV = "production"
-PORT = { default = "3000" }
 INIT_DB = "true"
-
-[build.env]
-NPM_CONFIG_PRODUCTION = "false"
 

@@ -1,0 +1,118 @@
+
+You reached the start of the range → Jun 5, 2025 12:52 PM
+
+ 
+
+[Region: us-east4]
+
+=========================
+
+Using Detected Dockerfile
+
+=========================
+
+
+context: 23rw-qVCW
+
+[internal] load build definition from Dockerfile
+
+[internal] load build definition from Dockerfile  ✔ 0ms
+
+[internal] load build definition from Dockerfile
+
+[internal] load build definition from Dockerfile  ✔ 13ms
+
+[internal] load metadata for docker.io/library/node:18-alpine
+
+[auth] library/node:pull token for registry-1.docker.io
+
+[auth] library/node:pull token for registry-1.docker.io  ✔ 0ms
+
+[internal] load metadata for docker.io/library/node:18-alpine  ✔ 300ms
+
+[internal] load .dockerignore
+
+[internal] load .dockerignore  ✔ 0ms
+
+[internal] load .dockerignore
+
+[internal] load .dockerignore  ✔ 9ms
+
+[8/8] RUN chown -R nodejs:nodejs /app
+
+[7/8] RUN adduser -S nodejs -u 1001
+
+[6/8] RUN addgroup -g 1001 -S nodejs
+
+[5/8] COPY . .
+
+[4/8] RUN npm ci --only=production
+
+[3/8] COPY package*.json ./
+
+[internal] load build context
+
+[2/8] WORKDIR /app
+
+[1/8] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e
+
+[1/8] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e
+
+[internal] load build context  ✔ 0ms
+
+[1/8] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e  ✔ 11ms
+
+[1/8] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e  ✔ 1ms
+
+[1/8] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e
+
+[internal] load build context
+
+[1/8] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e  ✔ 24ms
+
+[1/8] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e
+
+[internal] load build context  ✔ 32ms
+
+[1/8] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e  ✔ 391ms
+
+[2/8] WORKDIR /app
+
+[2/8] WORKDIR /app  ✔ 960ms
+
+[3/8] COPY package*.json ./
+
+[3/8] COPY package*.json ./  ✔ 108ms
+
+[4/8] RUN npm ci --only=production
+
+npm warn config only Use `--omit=dev` to omit dev dependencies from the install.
+
+
+added 88 packages, and audited 89 packages in 1s
+
+
+
+15 packages are looking for funding
+  run `npm fund` for details
+
+
+found 0 vulnerabilities
+
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.4.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.1
+npm notice To update run: npm install -g npm@11.4.1
+npm notice
+
+[4/8] RUN npm ci --only=production  ✔ 2s
+
+[5/8] COPY . .
+
+[5/8] COPY . .  ✔ 51ms
+
+[6/8] RUN addgroup -g 1001 -S nodejs
+
+[6/8] RUN addgroup -g 1001 -S nodejs  ✔ 119ms
+
+[7/8] RUN adduser -S nodejs -u 1001
