@@ -88,13 +88,20 @@ app.post('/tickets', async (req, res) => {
         const categories = ['Plomberie', 'Électricité', 'Chauffage', 'Serrurerie', 'Autre'];
         const category = categories[Math.floor(Math.random() * categories.length)];
         const priority = Math.floor(Math.random() * 5) + 1;
+        const confidence = Math.floor(Math.random() * 10) + 90;
         
         const result = await pool.query(
-            'INSERT INTO tickets (title, description, category, priority) VALUES ($1, $2, $3, $4) RETURNING *',
-            [title, description, category, priority]
+            'INSERT INTO tickets (title, description, category, priority, status) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [title, description, category, priority, 'nouveau']
         );
         
-        res.json(result.rows[0]);
+        const ticket = result.rows[0];
+        
+        res.json({
+            ...ticket,
+            ai_confidence: confidence,
+            success: true
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
