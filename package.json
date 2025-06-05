@@ -1,16 +1,15 @@
 {
-  "name": "ticket-system",
+  "name": "ticket-system-railway",
   "version": "3.0.0",
-  "description": "Système de gestion de tickets immobiliers avec IA",
+  "description": "Système de gestion de tickets immobiliers avec IA - Railway Ready",
   "main": "server-real.js",
   "scripts": {
     "start": "node server-real.js",
     "dev": "node server-real.js",
-    "build": "echo 'Build completed'",
-    "vercel-build": "npm install"
+    "build": "echo 'No build step required'"
   },
   "engines": {
-    "node": "18.x"
+    "node": ">=18.0.0"
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -20,7 +19,7 @@
     "uuid": "^9.0.1",
     "node-cron": "^3.0.3"
   },
-  "keywords": ["tickets", "immobilier", "ia", "gestion"],
+  "keywords": ["tickets", "immobilier", "ia", "gestion", "railway"],
   "author": "Ticket System Team",
   "license": "MIT"
 }

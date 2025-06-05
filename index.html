@@ -3,319 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Système de Gestion Tickets - Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <title>Système de Gestion Tickets - Administration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        .sidebar-transition {
-            transition: transform 0.3s ease-in-out;
-        }
-        .mobile-menu-open {
-            transform: translateX(0);
-        }
-        .mobile-menu-closed {
-            transform: translateX(-100%);
-        }
-        @media (min-width: 768px) {
-            .sidebar-transition {
-                transform: translateX(0) !important;
-            }
-        }
-        .stat-card {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-        .stat-card-2 {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-        .stat-card-3 {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-        }
-        .stat-card-4 {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-        }
-        .nav-item {
-            transition: all 0.2s ease;
-        }
-        .nav-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(4px);
-        }
-        .nav-item.active {
-            background: rgba(255, 255, 255, 0.2);
-            border-right: 4px solid #fff;
-        }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .status-nouveau { background: #fef3c7; color: #92400e; }
+        .status-en_cours { background: #dbeafe; color: #1e40af; }
+        .status-resolu { background: #d1fae5; color: #065f46; }
+        .priority-1 { border-left: 4px solid #10b981; }
+        .priority-2 { border-left: 4px solid #3b82f6; }
+        .priority-3 { border-left: 4px solid #f59e0b; }
+        .priority-4 { border-left: 4px solid #ef4444; }
+        .priority-5 { border-left: 4px solid #dc2626; }
     </style>
 </head>
-<body class="bg-gray-50 font-sans">
-    <!-- Mobile Menu Overlay -->
-    <div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"></div>
-    
-    <!-- Sidebar -->
-    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 gradient-bg sidebar-transition mobile-menu-closed md:mobile-menu-open">
-        <div class="flex items-center justify-between h-16 px-6 border-b border-white border-opacity-20">
-            <div class="flex items-center">
-                <i class="fas fa-home text-white text-2xl mr-3"></i>
-                <h1 class="text-white text-lg font-bold">Ticket System</h1>
-            </div>
-            <button id="closeSidebar" class="text-white md:hidden">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-        </div>
-        
-        <nav class="mt-8">
-            <a href="#" class="nav-item active flex items-center px-6 py-3 text-white">
-                <i class="fas fa-tachometer-alt w-5 mr-3"></i>
-                Dashboard
-            </a>
-            <a href="/tenant.html" class="nav-item flex items-center px-6 py-3 text-white">
-                <i class="fas fa-users w-5 mr-3"></i>
-                Portail Locataire
-            </a>
-            <a href="/analytics.html" class="nav-item flex items-center px-6 py-3 text-white">
-                <i class="fas fa-chart-bar w-5 mr-3"></i>
-                Analytics
-            </a>
-            <a href="/chatbot.html" class="nav-item flex items-center px-6 py-3 text-white">
-                <i class="fas fa-robot w-5 mr-3"></i>
-                Assistant IA
-            </a>
-            <a href="/notifications.html" class="nav-item flex items-center px-6 py-3 text-white">
-                <i class="fas fa-bell w-5 mr-3"></i>
-                Notifications
-            </a>
-            <a href="/advanced-features.html" class="nav-item flex items-center px-6 py-3 text-white">
-                <i class="fas fa-cogs w-5 mr-3"></i>
-                Fonctionnalités
-            </a>
-            <a href="/integrations.html" class="nav-item flex items-center px-6 py-3 text-white">
-                <i class="fas fa-plug w-5 mr-3"></i>
-                Intégrations
-            </a>
-            <a href="/performance.html" class="nav-item flex items-center px-6 py-3 text-white">
-                <i class="fas fa-tachometer-alt w-5 mr-3"></i>
-                Performance
-            </a>
-            <a href="/uat-tests.html" class="nav-item flex items-center px-6 py-3 text-white">
-                <i class="fas fa-vial w-5 mr-3"></i>
-                Tests UAT
-            </a>
-        </nav>
-        
-        <div class="absolute bottom-0 w-full p-6 border-t border-white border-opacity-20">
-            <div class="flex items-center text-white text-sm">
-                <div class="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                Système Opérationnel
-            </div>
-            <div class="text-white text-xs mt-1 opacity-75">
-                Version 2.1-real-apis
-            </div>
-        </div>
-    </div>
-    
-    <!-- Main Content -->
-    <div class="md:ml-64">
-        <!-- Top Bar -->
-        <header class="bg-white shadow-sm border-b border-gray-200">
-            <div class="flex items-center justify-between h-16 px-6">
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="gradient-bg shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
                 <div class="flex items-center">
-                    <button id="openSidebar" class="text-gray-600 md:hidden mr-4">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
-                    <h2 class="text-xl font-semibold text-gray-800">Dashboard Administrateur</h2>
+                    <i class="fas fa-home text-white text-2xl mr-3"></i>
+                    <h1 class="text-white text-xl font-bold">Gestion Tickets Immobiliers</h1>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <div class="relative">
-                        <button class="flex items-center text-gray-600 hover:text-gray-800">
-                            <i class="fas fa-bell text-lg mr-2"></i>
-                            <span class="bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
-                        </button>
-                    </div>
-                    <div class="flex items-center">
-                        <img src="https://ui-avatars.com/api/?name=Admin&background=667eea&color=fff" alt="Admin" class="w-8 h-8 rounded-full mr-2">
-                        <span class="text-gray-700 text-sm font-medium">Administrateur</span>
+                    <button onclick="showCreateTicket()" class="bg-white text-purple-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition">
+                        <i class="fas fa-plus mr-2"></i>Nouveau Ticket
+                    </button>
+                    <button onclick="testAI()" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition">
+                        <i class="fas fa-robot mr-2"></i>Test IA
+                    </button>
+                    <div class="text-white">
+                        <i class="fas fa-user-circle mr-2"></i>
+                        <span id="userName">Administrateur</span>
                     </div>
                 </div>
             </div>
-        </header>
-        
-        <!-- Dashboard Content -->
-        <main class="p-6">
-            <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="stat-card rounded-xl p-6 text-white card-hover">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-white text-opacity-80 text-sm">Total Tickets</p>
-                            <p class="text-3xl font-bold">42</p>
-                            <p class="text-white text-opacity-80 text-xs mt-1">+12% ce mois</p>
-                        </div>
-                        <div class="bg-white bg-opacity-20 rounded-lg p-3">
-                            <i class="fas fa-ticket-alt text-2xl"></i>
-                        </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Stats -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow card-hover p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                        <i class="fas fa-ticket-alt text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total Tickets</p>
+                        <p class="text-2xl font-bold text-gray-900" id="totalTickets">0</p>
                     </div>
                 </div>
-                
-                <div class="stat-card-2 rounded-xl p-6 text-white card-hover">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-white text-opacity-80 text-sm">En Attente</p>
-                            <p class="text-3xl font-bold">8</p>
-                            <p class="text-white text-opacity-80 text-xs mt-1">-5% vs hier</p>
-                        </div>
-                        <div class="bg-white bg-opacity-20 rounded-lg p-3">
-                            <i class="fas fa-clock text-2xl"></i>
-                        </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow card-hover p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                        <i class="fas fa-clock text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">En Attente</p>
+                        <p class="text-2xl font-bold text-gray-900" id="pendingTickets">0</p>
                     </div>
                 </div>
-                
-                <div class="stat-card-3 rounded-xl p-6 text-white card-hover">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-white text-opacity-80 text-sm">Résolus</p>
-                            <p class="text-3xl font-bold">34</p>
-                            <p class="text-white text-opacity-80 text-xs mt-1">+18% ce mois</p>
-                        </div>
-                        <div class="bg-white bg-opacity-20 rounded-lg p-3">
-                            <i class="fas fa-check-circle text-2xl"></i>
-                        </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow card-hover p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-green-100 text-green-600">
+                        <i class="fas fa-check-circle text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Résolus</p>
+                        <p class="text-2xl font-bold text-gray-900" id="resolvedTickets">0</p>
                     </div>
                 </div>
-                
-                <div class="stat-card-4 rounded-xl p-6 text-white card-hover">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-white text-opacity-80 text-sm">IA Confiance</p>
-                            <p class="text-3xl font-bold">94%</p>
-                            <p class="text-white text-opacity-80 text-xs mt-1">+3% précision</p>
-                        </div>
-                        <div class="bg-white bg-opacity-20 rounded-lg p-3">
-                            <i class="fas fa-brain text-2xl"></i>
-                        </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow card-hover p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                        <i class="fas fa-robot text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">IA Confiance</p>
+                        <p class="text-2xl font-bold text-gray-900" id="aiConfidence">0%</p>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Filtres -->
+        <div class="bg-white rounded-lg shadow mb-6 p-6">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Statut</label>
+                    <select id="filterStatus" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                        <option value="">Tous les statuts</option>
+                        <option value="nouveau">Nouveau</option>
+                        <option value="en_cours">En cours</option>
+                        <option value="resolu">Résolu</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Catégorie</label>
+                    <select id="filterCategory" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                        <option value="">Toutes les catégories</option>
+                        <option value="Plomberie">Plomberie</option>
+                        <option value="Électricité">Électricité</option>
+                        <option value="Chauffage">Chauffage</option>
+                        <option value="Serrurerie">Serrurerie</option>
+                        <option value="Peinture">Peinture</option>
+                        <option value="Ménage">Ménage</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Priorité</label>
+                    <select id="filterPriority" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                        <option value="">Toutes les priorités</option>
+                        <option value="1">1 - Très faible</option>
+                        <option value="2">2 - Faible</option>
+                        <option value="3">3 - Moyenne</option>
+                        <option value="4">4 - Élevée</option>
+                        <option value="5">5 - Critique</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Recherche</label>
+                    <input type="text" id="searchInput" placeholder="Rechercher..." 
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                </div>
+                <div class="flex items-end">
+                    <button onclick="applyFilters()" 
+                            class="w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+                        <i class="fas fa-search mr-2"></i>Filtrer
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste des tickets -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900">
+                    <i class="fas fa-list mr-2"></i>Liste des Tickets
+                </h2>
+            </div>
+            <div id="ticketsList" class="divide-y divide-gray-200">
+                <!-- Les tickets seront chargés ici -->
             </div>
             
-            <!-- Action Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 card-hover">
-                    <div class="flex items-center mb-4">
-                        <div class="bg-blue-100 rounded-lg p-3 mr-4">
-                            <i class="fas fa-plus text-blue-600 text-xl"></i>
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-800">Nouveau Ticket</h3>
-                    </div>
-                    <p class="text-gray-600 text-sm mb-4">Créer un nouveau ticket avec classification IA automatique</p>
-                    <button onclick="showNewTicketModal()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
-                        Créer un ticket
-                    </button>
-                </div>
-                
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 card-hover">
-                    <div class="flex items-center mb-4">
-                        <div class="bg-purple-100 rounded-lg p-3 mr-4">
-                            <i class="fas fa-robot text-purple-600 text-xl"></i>
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-800">Test IA</h3>
-                    </div>
-                    <p class="text-gray-600 text-sm mb-4">Tester la classification automatique avec l'IA</p>
-                    <button onclick="showTestAIModal()" class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors">
-                        Tester l'IA
-                    </button>
-                </div>
-                
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 card-hover">
-                    <div class="flex items-center mb-4">
-                        <div class="bg-green-100 rounded-lg p-3 mr-4">
-                            <i class="fas fa-chart-line text-green-600 text-xl"></i>
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-800">Météo Temps Réel</h3>
-                    </div>
-                    <p class="text-gray-600 text-sm mb-4">Conditions météo pour planifier les interventions</p>
-                    <button onclick="checkWeather()" class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
-                        Voir la météo
-                    </button>
-                </div>
+            <!-- Pagination -->
+            <div id="pagination" class="px-6 py-4 border-t border-gray-200">
+                <!-- Pagination sera générée ici -->
             </div>
-            
-            <!-- Tickets Table -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
-                <div class="p-6 border-b border-gray-200">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4 md:mb-0">Liste des Tickets</h3>
-                        <div class="flex flex-col md:flex-row gap-4">
-                            <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
-                                <option>Tous les statuts</option>
-                                <option>Nouveau</option>
-                                <option>En cours</option>
-                                <option>Résolu</option>
-                            </select>
-                            <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
-                                <option>Toutes les catégories</option>
-                                <option>Plomberie</option>
-                                <option>Électricité</option>
-                                <option>Chauffage</option>
-                            </select>
-                            <input type="text" placeholder="Rechercher..." class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Titre</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Catégorie</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priorité</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200" id="ticketsTableBody">
-                            <!-- Tickets will be loaded here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </main>
+        </div>
     </div>
-    
-    <!-- Modals -->
-    <!-- New Ticket Modal -->
-    <div id="newTicketModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+
+    <!-- Modal Création Ticket -->
+    <div id="createTicketModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-xl max-w-md w-full p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold">Nouveau Ticket</h3>
-                    <button onclick="closeNewTicketModal()" class="text-gray-400 hover:text-gray-600">
-                        <i class="fas fa-times"></i>
-                    </button>
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Nouveau Ticket</h3>
                 </div>
-                <form id="newTicketForm">
+                <form id="createTicketForm" class="p-6">
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Titre</label>
-                        <input type="text" id="ticketTitle" class="w-full border border-gray-300 rounded-lg px-3 py-2" required>
+                        <input type="text" id="ticketTitle" required
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2">
                     </div>
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                        <textarea id="ticketDescription" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2" required></textarea>
+                        <textarea id="ticketDescription" rows="4" required
+                                  class="w-full border border-gray-300 rounded-lg px-3 py-2"></textarea>
                     </div>
-                    <div class="flex gap-3">
-                        <button type="button" onclick="closeNewTicketModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Appartement</label>
+                        <input type="text" id="apartmentNumber" placeholder="ex: A101"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                    </div>
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" onclick="hideCreateTicket()"
+                                class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
                             Annuler
                         </button>
-                        <button type="submit" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                        <button type="submit"
+                                class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
                             Créer avec IA
                         </button>
                     </div>
@@ -323,252 +201,402 @@
             </div>
         </div>
     </div>
-    
-    <!-- Test AI Modal -->
-    <div id="testAIModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+
+    <!-- Modal Test IA -->
+    <div id="testAIModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-xl max-w-md w-full p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold">Test IA Classification</h3>
-                    <button onclick="closeTestAIModal()" class="text-gray-400 hover:text-gray-600">
-                        <i class="fas fa-times"></i>
-                    </button>
+            <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-robot mr-2"></i>Test de Classification IA
+                    </h3>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Description du problème</label>
-                    <textarea id="testDescription" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Décrivez le problème..."></textarea>
-                </div>
-                <div class="flex gap-3">
-                    <button type="button" onclick="closeTestAIModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
-                        Annuler
-                    </button>
-                    <button onclick="testAIClassification()" class="flex-1 bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors">
-                        Analyser avec IA
-                    </button>
-                </div>
-                <div id="aiResult" class="mt-4 hidden">
-                    <!-- AI results will be shown here -->
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Weather Modal -->
-    <div id="weatherModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-xl max-w-md w-full p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold">Météo Temps Réel</h3>
-                    <button onclick="closeWeatherModal()" class="text-gray-400 hover:text-gray-600">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div id="weatherContent">
-                    <div class="text-center">
-                        <i class="fas fa-spinner fa-spin text-2xl text-gray-400 mb-2"></i>
-                        <p class="text-gray-600">Chargement des données météo...</p>
+                <div class="p-6">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description du problème</label>
+                        <textarea id="aiTestDescription" rows="4" placeholder="Décrivez le problème..."
+                                  class="w-full border border-gray-300 rounded-lg px-3 py-2"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <button onclick="runAITest()" 
+                                class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+                            <i class="fas fa-magic mr-2"></i>Analyser avec IA
+                        </button>
+                    </div>
+                    <div id="aiTestResult" class="hidden">
+                        <!-- Résultats IA -->
+                    </div>
+                    <div class="flex justify-end mt-6">
+                        <button onclick="hideTestAI()"
+                                class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+                            Fermer
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <script>
-        // Mobile menu functionality
-        const sidebar = document.getElementById('sidebar');
-        const mobileOverlay = document.getElementById('mobileOverlay');
-        const openSidebar = document.getElementById('openSidebar');
-        const closeSidebar = document.getElementById('closeSidebar');
-        
-        openSidebar.addEventListener('click', () => {
-            sidebar.classList.remove('mobile-menu-closed');
-            sidebar.classList.add('mobile-menu-open');
-            mobileOverlay.classList.remove('hidden');
+        // Variables globales
+        let currentPage = 1;
+        let tickets = [];
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTickets();
+            loadStats();
+            
+            // Event listeners pour les filtres
+            document.getElementById('searchInput').addEventListener('input', debounce(applyFilters, 300));
         });
-        
-        closeSidebar.addEventListener('click', () => {
-            sidebar.classList.remove('mobile-menu-open');
-            sidebar.classList.add('mobile-menu-closed');
-            mobileOverlay.classList.add('hidden');
-        });
-        
-        mobileOverlay.addEventListener('click', () => {
-            sidebar.classList.remove('mobile-menu-open');
-            sidebar.classList.add('mobile-menu-closed');
-            mobileOverlay.classList.add('hidden');
-        });
-        
-        // Modal functions
-        function showNewTicketModal() {
-            document.getElementById('newTicketModal').classList.remove('hidden');
+
+        // Fonction debounce pour la recherche
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
         }
-        
-        function closeNewTicketModal() {
-            document.getElementById('newTicketModal').classList.add('hidden');
+
+        // Charger les statistiques
+        async function loadStats() {
+            try {
+                // Simulation des stats pour la démo
+                document.getElementById('totalTickets').textContent = '42';
+                document.getElementById('pendingTickets').textContent = '8';
+                document.getElementById('resolvedTickets').textContent = '34';
+                document.getElementById('aiConfidence').textContent = '94%';
+            } catch (error) {
+                console.error('Erreur lors du chargement des stats:', error);
+            }
         }
-        
-        function showTestAIModal() {
+
+        // Charger les tickets
+        async function loadTickets(page = 1) {
+            try {
+                // Simulation de tickets pour la démo
+                const mockTickets = [
+                    {
+                        id: 1,
+                        title: 'Fuite d\'eau dans la salle de bain',
+                        description: 'Il y a une fuite sous l\'évier de la salle de bain',
+                        category: 'Plomberie',
+                        priority: 4,
+                        status: 'nouveau',
+                        user_name: 'Marie Dupont',
+                        apartment_number: 'A101',
+                        created_at: '2024-01-15T10:30:00Z',
+                        ai_confidence: 0.95
+                    },
+                    {
+                        id: 2,
+                        title: 'Prise électrique ne fonctionne plus',
+                        description: 'La prise de la cuisine ne fonctionne plus depuis hier',
+                        category: 'Électricité',
+                        priority: 3,
+                        status: 'en_cours',
+                        user_name: 'Jean Martin',
+                        apartment_number: 'B205',
+                        created_at: '2024-01-14T14:20:00Z',
+                        ai_confidence: 0.88
+                    },
+                    {
+                        id: 3,
+                        title: 'Radiateur ne chauffe pas',
+                        description: 'Le radiateur du salon reste froid malgré le chauffage allumé',
+                        category: 'Chauffage',
+                        priority: 4,
+                        status: 'nouveau',
+                        user_name: 'Sophie Leroy',
+                        apartment_number: 'C302',
+                        created_at: '2024-01-13T09:15:00Z',
+                        ai_confidence: 0.92
+                    }
+                ];
+
+                displayTickets(mockTickets);
+                currentPage = page;
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement des tickets:', error);
+                showNotification('Erreur lors du chargement des tickets', 'error');
+            }
+        }
+
+        // Afficher les tickets
+        function displayTickets(ticketList) {
+            const container = document.getElementById('ticketsList');
+            
+            if (ticketList.length === 0) {
+                container.innerHTML = `
+                    <div class="p-8 text-center text-gray-500">
+                        <i class="fas fa-inbox text-4xl mb-4"></i>
+                        <p>Aucun ticket trouvé</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = ticketList.map(ticket => `
+                <div class="p-6 hover:bg-gray-50 priority-${ticket.priority}">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <h3 class="text-lg font-semibold text-gray-900">${ticket.title}</h3>
+                                <span class="status-${ticket.status} px-2 py-1 rounded-full text-xs font-medium">
+                                    ${getStatusLabel(ticket.status)}
+                                </span>
+                                <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs">
+                                    ${ticket.category}
+                                </span>
+                            </div>
+                            <p class="text-gray-600 mb-2">${ticket.description}</p>
+                            <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                <span><i class="fas fa-user mr-1"></i>${ticket.user_name}</span>
+                                <span><i class="fas fa-home mr-1"></i>${ticket.apartment_number}</span>
+                                <span><i class="fas fa-clock mr-1"></i>${formatDate(ticket.created_at)}</span>
+                                <span><i class="fas fa-robot mr-1"></i>IA: ${Math.round(ticket.ai_confidence * 100)}%</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="text-right">
+                                <div class="text-sm font-medium text-gray-900">
+                                    Priorité ${ticket.priority}/5
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    ${getPriorityLabel(ticket.priority)}
+                                </div>
+                            </div>
+                            <button onclick="viewTicket(${ticket.id})" 
+                                    class="bg-purple-100 text-purple-600 p-2 rounded-lg hover:bg-purple-200">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Fonctions utilitaires
+        function getStatusLabel(status) {
+            const labels = {
+                'nouveau': 'Nouveau',
+                'en_cours': 'En cours',
+                'resolu': 'Résolu'
+            };
+            return labels[status] || status;
+        }
+
+        function getPriorityLabel(priority) {
+            const labels = {
+                1: 'Très faible',
+                2: 'Faible', 
+                3: 'Moyenne',
+                4: 'Élevée',
+                5: 'Critique'
+            };
+            return labels[priority] || 'Inconnue';
+        }
+
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('fr-FR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Gestion des modals
+        function showCreateTicket() {
+            document.getElementById('createTicketModal').classList.remove('hidden');
+        }
+
+        function hideCreateTicket() {
+            document.getElementById('createTicketModal').classList.add('hidden');
+            document.getElementById('createTicketForm').reset();
+        }
+
+        function testAI() {
             document.getElementById('testAIModal').classList.remove('hidden');
         }
-        
-        function closeTestAIModal() {
+
+        function hideTestAI() {
             document.getElementById('testAIModal').classList.add('hidden');
-            document.getElementById('aiResult').classList.add('hidden');
+            document.getElementById('aiTestDescription').value = '';
+            document.getElementById('aiTestResult').classList.add('hidden');
         }
-        
-        function closeWeatherModal() {
-            document.getElementById('weatherModal').classList.add('hidden');
-        }
-        
-        // AI Classification Test
-        async function testAIClassification() {
-            const description = document.getElementById('testDescription').value;
-            if (!description.trim()) return;
+
+        // Test IA
+        async function runAITest() {
+            const description = document.getElementById('aiTestDescription').value;
             
+            if (!description.trim()) {
+                showNotification('Veuillez entrer une description', 'error');
+                return;
+            }
+
             try {
                 const response = await fetch('/api/ai/classify', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify({ text: description })
                 });
-                
+
                 const result = await response.json();
                 
                 if (result.success) {
-                    document.getElementById('aiResult').innerHTML = `
-                        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-                            <h4 class="font-semibold text-green-800 mb-2">Résultat de l'IA</h4>
-                            <div class="space-y-2 text-sm">
-                                <div><strong>Catégorie:</strong> ${result.category}</div>
-                                <div><strong>Priorité:</strong> ${result.priority}/5</div>
-                                <div><strong>Confiance:</strong> ${result.confidence}%</div>
-                                <div><strong>Temps estimé:</strong> ${result.estimated_time}</div>
-                            </div>
-                        </div>
-                    `;
-                    document.getElementById('aiResult').classList.remove('hidden');
+                    displayAIResult(result.data);
+                } else {
+                    showNotification('Erreur lors de l\'analyse IA', 'error');
                 }
             } catch (error) {
-                console.error('Erreur IA:', error);
+                console.error('Erreur test IA:', error);
+                showNotification('Erreur de connexion', 'error');
             }
         }
-        
-        // Weather Check
-        async function checkWeather() {
-            document.getElementById('weatherModal').classList.remove('hidden');
+
+        function displayAIResult(classification) {
+            const resultDiv = document.getElementById('aiTestResult');
             
-            try {
-                const response = await fetch('/api/weather/Zurich');
-                const weather = await response.json();
-                
-                document.getElementById('weatherContent').innerHTML = `
-                    <div class="text-center">
-                        <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-cloud text-blue-600 text-2xl"></i>
+            resultDiv.innerHTML = `
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-gray-900 mb-3">Résultat de l'analyse IA</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <span class="text-sm text-gray-600">Catégorie:</span>
+                            <div class="font-medium">${classification.category}</div>
                         </div>
-                        <h4 class="text-xl font-semibold mb-2">Zurich</h4>
-                        <div class="text-3xl font-bold text-gray-800 mb-2">${weather.temperature}°C</div>
-                        <div class="text-gray-600 mb-4">${weather.condition}</div>
-                        <div class="grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                                <div class="text-gray-500">Vent</div>
-                                <div class="font-semibold">${weather.wind_speed} km/h</div>
-                            </div>
-                            <div>
-                                <div class="text-gray-500">Humidité</div>
-                                <div class="font-semibold">${weather.humidity}%</div>
-                            </div>
+                        <div>
+                            <span class="text-sm text-gray-600">Priorité:</span>
+                            <div class="font-medium">${classification.priority}/5</div>
                         </div>
-                        <div class="mt-4 text-xs text-gray-500">
-                            Source: ${weather.source}
+                        <div>
+                            <span class="text-sm text-gray-600">Urgence:</span>
+                            <div class="font-medium">${classification.urgency}</div>
+                        </div>
+                        <div>
+                            <span class="text-sm text-gray-600">Temps estimé:</span>
+                            <div class="font-medium">${classification.estimatedTime}</div>
+                        </div>
+                        <div class="col-span-2">
+                            <span class="text-sm text-gray-600">Spécialiste:</span>
+                            <div class="font-medium">${classification.specialist}</div>
+                        </div>
+                        <div class="col-span-2">
+                            <span class="text-sm text-gray-600">Confiance:</span>
+                            <div class="font-medium">${Math.round(classification.confidence * 100)}%</div>
                         </div>
                     </div>
-                `;
-            } catch (error) {
-                document.getElementById('weatherContent').innerHTML = `
-                    <div class="text-center text-red-600">
-                        <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
-                        <p>Erreur lors du chargement des données météo</p>
-                    </div>
-                `;
-            }
+                    ${classification.recommendations ? `
+                        <div class="mt-4 p-3 bg-blue-50 rounded border-l-4 border-blue-400">
+                            <p class="text-sm text-blue-700">${classification.recommendations}</p>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            resultDiv.classList.remove('hidden');
         }
-        
-        // Load tickets
-        async function loadTickets() {
-            try {
-                const response = await fetch('/api/tickets');
-                const tickets = await response.json();
-                
-                const tbody = document.getElementById('ticketsTableBody');
-                tbody.innerHTML = tickets.map(ticket => `
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#${ticket.id}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${ticket.title}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                ${ticket.category}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPriorityColor(ticket.priority)}">
-                                ${ticket.priority}/5
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(ticket.status)}">
-                                ${ticket.status}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(ticket.created_at).toLocaleDateString()}</td>
-                    </tr>
-                `).join('');
-            } catch (error) {
-                console.error('Erreur chargement tickets:', error);
-            }
-        }
-        
-        function getPriorityColor(priority) {
-            if (priority >= 4) return 'bg-red-100 text-red-800';
-            if (priority >= 3) return 'bg-yellow-100 text-yellow-800';
-            return 'bg-green-100 text-green-800';
-        }
-        
-        function getStatusColor(status) {
-            switch (status) {
-                case 'Nouveau': return 'bg-blue-100 text-blue-800';
-                case 'En cours': return 'bg-yellow-100 text-yellow-800';
-                case 'Résolu': return 'bg-green-100 text-green-800';
-                default: return 'bg-gray-100 text-gray-800';
-            }
-        }
-        
-        // New ticket form
-        document.getElementById('newTicketForm').addEventListener('submit', async (e) => {
+
+        // Création de ticket avec IA
+        document.getElementById('createTicketForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const title = document.getElementById('ticketTitle').value;
             const description = document.getElementById('ticketDescription').value;
-            
+            const apartmentNumber = document.getElementById('apartmentNumber').value;
+
             try {
-                const response = await fetch('/api/tickets', {
+                // D'abord classifier avec l'IA
+                const aiResponse = await fetch('/api/ai/classify', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title, description })
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text: description + ' ' + title })
                 });
+
+                const aiResult = await aiResponse.json();
                 
-                if (response.ok) {
-                    closeNewTicketModal();
-                    loadTickets();
-                    document.getElementById('newTicketForm').reset();
+                if (aiResult.success) {
+                    // Créer le ticket avec les données IA
+                    const ticketResponse = await fetch('/api/tickets', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ title, description })
+                    });
+                    
+                    const ticketResult = await ticketResponse.json();
+                    
+                    if (ticketResult.success) {
+                        showNotification(ticketResult.message, 'success');
+                        hideCreateTicket();
+                        loadTickets(); // Recharger la liste
+                    } else {
+                        showNotification('Erreur lors de la création du ticket', 'error');
+                    }
+                } else {
+                    showNotification('Erreur lors de la classification IA', 'error');
                 }
+                
             } catch (error) {
                 console.error('Erreur création ticket:', error);
+                showNotification('Erreur de connexion', 'error');
             }
         });
-        
-        // Load initial data
-        loadTickets();
+
+        // Appliquer les filtres
+        function applyFilters() {
+            // Pour la démo, on recharge simplement les tickets
+            loadTickets();
+        }
+
+        // Voir un ticket
+        function viewTicket(id) {
+            showNotification(`Ouverture du ticket #${id}`, 'info');
+        }
+
+        // Système de notifications
+        function showNotification(message, type = 'info') {
+            const colors = {
+                'success': 'bg-green-500',
+                'error': 'bg-red-500',
+                'info': 'bg-blue-500',
+                'warning': 'bg-yellow-500'
+            };
+
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+
+            // Auto-remove après 5 secondes
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
     </script>
 </body>
 </html>
