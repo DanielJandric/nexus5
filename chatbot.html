@@ -529,7 +529,59 @@
                 console.error('❌ Erreur connexion IA:', error);
             }
         }
-    </script>
+   // FONCTION MANQUANTE: Ajouter message à la conversation
+function addMessage(content, sender, metadata = {}) {
+    const messagesContainer = document.getElementById('chatMessages') || 
+                              document.querySelector('.chat-messages') ||
+                              document.querySelector('.messages');
+    
+    if (!messagesContainer) {
+        console.error('Container de messages non trouvé');
+        return;
+    }
+    
+    // Créer le message
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}`;
+    
+    const timestamp = new Date().toLocaleTimeString('fr-FR', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+    });
+    
+    // Contenu du message adapté à votre design existant
+    messageDiv.innerHTML = `
+        <div class="message-content">
+            <div class="message-bubble ${sender}">
+                ${content}
+            </div>
+            <div class="message-meta">
+                <span class="timestamp">${timestamp}</span>
+                ${metadata.confidence ? `<span class="confidence">Confiance: ${metadata.confidence}%</span>` : ''}
+            </div>
+        </div>
+    `;
+    
+    // Ajouter à l'interface
+    messagesContainer.appendChild(messageDiv);
+    
+    // Ajouter à l'historique pour OpenAI
+    if (!window.chatHistory) window.chatHistory = [];
+    
+    chatHistory.push({
+        role: sender === 'user' ? 'user' : 'assistant',
+        content: content
+    });
+    
+    // Limiter l'historique
+    if (chatHistory.length > 10) {
+        chatHistory = chatHistory.slice(-10);
+    }
+    
+    // Scroll vers le bas
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+ </script>
 </body>
 </html>
 
