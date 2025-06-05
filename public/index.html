@@ -552,7 +552,80 @@
         
         // Load initial data
         loadTickets();
-    </script>
+   // NOUVELLE FONCTION: Mise à jour des stats depuis les tickets
+function updateStatsFromTickets() {
+    const total = tickets.length;
+    const pending = tickets.filter(t => 
+        t.status === 'En cours' || 
+        t.status === 'Nouveau' || 
+        t.status === 'Assigné'
+    ).length;
+    const resolved = tickets.filter(t => 
+        t.status === 'Résolu' || 
+        t.status === 'Fermé'
+    ).length;
+
+    // Mise à jour des éléments HTML
+    const totalElement = document.getElementById('totalTickets') || 
+                         document.querySelector('.total-tickets');
+    const pendingElement = document.getElementById('pendingTickets') || 
+                           document.querySelector('.pending-tickets');
+    const resolvedElement = document.getElementById('resolvedTickets') || 
+                            document.querySelector('.resolved-tickets');
+    
+    if (totalElement) totalElement.textContent = total;
+    if (pendingElement) pendingElement.textContent = pending;
+    if (resolvedElement) resolvedElement.textContent = resolved;
+}
+// NOUVELLE FONCTION: Création de ticket avec rechargement
+async function createTicket() {
+    const title = document.getElementById('ticketTitle').value;
+    const description = document.getElementById('ticketDescription').value;
+    
+    if (!title || !description) {
+        alert('Veuillez remplir tous les champs');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/tickets', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: title,
+                description: description,
+                tenant: 'Utilisateur',
+                apartment: 'Web'
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            // Fermer le modal
+            const modal = document.getElementById('ticketModal');
+            if (modal) modal.style.display = 'none';
+            
+            // CORRECTION CRITIQUE: Recharger toutes les données
+            await loadTickets();
+            await loadStats();
+            
+            alert(`✅ Ticket créé avec succès !
+🤖 Classification IA :
+• Catégorie: ${result.aiClassification?.category || 'Non définie'}
+• Priorité: ${result.aiClassification?.priority || 'Non définie'}/5
+• Confiance: ${result.aiClassification?.confidence || 'Non définie'}%`);
+        } else {
+            alert('❌ Erreur lors de la création du ticket');
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+        alert('❌ Erreur de connexion');
+    }
+}
+ </script>
 </body>
 </html>
 
