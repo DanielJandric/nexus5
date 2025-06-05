@@ -366,7 +366,10 @@
     </div>
 
     <script>
-        let conversationHistory = [];
+        // Variables globales pour le chatbot
+let chatHistory = [];
+let isTyping = false;
+let conversationHistory = [];
 
         // Auto-resize textarea
         document.getElementById('messageInput').addEventListener('input', function() {
