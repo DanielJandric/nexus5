@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Analytics - Gestion Tickets</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .metric-card { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .metric-card-blue { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .metric-card-green { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .metric-card-purple { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .chart-container { height: 400px; }
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="gradient-bg shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-chart-line text-white text-2xl mr-3"></i>
+                    <h1 class="text-white text-xl font-bold">Dashboard Analytics</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="window.location.href='/'" class="bg-white text-purple-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition">
+                        <i class="fas fa-arrow-left mr-2"></i>Retour Admin
+                    </button>
+                    <button onclick="refreshData()" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition">
+                        <i class="fas fa-sync-alt mr-2"></i>Actualiser
+                    </button>
+                    <div class="text-white">
+                        <i class="fas fa-user-circle mr-2"></i>
+                        <span>Analytics Manager</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Filtres Temporels -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div class="flex flex-wrap items-center justify-between">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4 md:mb-0">
+                    <i class="fas fa-filter mr-2"></i>Filtres Temporels
+                </h2>
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="setPeriod('today')" class="period-btn bg-purple-100 text-purple-700 px-4 py-2 rounded-lg hover:bg-purple-200 transition">
+                        Aujourd'hui
+                    </button>
+                    <button onclick="setPeriod('week')" class="period-btn bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+                        7 jours
+                    </button>
+                    <button onclick="setPeriod('month')" class="period-btn bg-purple-100 text-purple-700 px-4 py-2 rounded-lg hover:bg-purple-200 transition">
+                        30 jours
+                    </button>
+                    <button onclick="setPeriod('quarter')" class="period-btn bg-purple-100 text-purple-700 px-4 py-2 rounded-lg hover:bg-purple-200 transition">
+                        3 mois
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPIs Avancés -->
+        <div class="kpi-grid mb-8">
+            <!-- Total Tickets -->
+            <div class="metric-card text-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-white/80 text-sm font-medium">Total Tickets</p>
+                        <p class="text-3xl font-bold" id="totalTicketsKPI">156</p>
+                        <p class="text-white/80 text-xs mt-1">+12% vs période précédente</p>
+                    </div>
+                    <div class="p-3 bg-white/20 rounded-full">
+                        <i class="fas fa-ticket-alt text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Temps Résolution Moyen -->
+            <div class="metric-card-blue text-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-white/80 text-sm font-medium">Temps Résolution</p>
+                        <p class="text-3xl font-bold" id="avgResolutionTime">2.4h</p>
+                        <p class="text-white/80 text-xs mt-1">-15% vs période précédente</p>
+                    </div>
+                    <div class="p-3 bg-white/20 rounded-full">
+                        <i class="fas fa-clock text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Satisfaction Client -->
+            <div class="metric-card-green text-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-white/80 text-sm font-medium">Satisfaction Client</p>
+                        <p class="text-3xl font-bold" id="customerSatisfaction">4.7/5</p>
+                        <p class="text-white/80 text-xs mt-1">+8% vs période précédente</p>
+                    </div>
+                    <div class="p-3 bg-white/20 rounded-full">
+                        <i class="fas fa-star text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance IA -->
+            <div class="metric-card-purple text-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-white/80 text-sm font-medium">Performance IA</p>
+                        <p class="text-3xl font-bold" id="aiPerformance">94.2%</p>
+                        <p class="text-white/80 text-xs mt-1">+3% vs période précédente</p>
+                    </div>
+                    <div class="p-3 bg-white/20 rounded-full">
+                        <i class="fas fa-brain text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Taux de Résolution -->
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover border-l-4 border-green-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">Taux de Résolution</p>
+                        <p class="text-3xl font-bold text-gray-900" id="resolutionRate">87.3%</p>
+                        <p class="text-green-600 text-xs mt-1">+5% vs période précédente</p>
+                    </div>
+                    <div class="p-3 bg-green-100 rounded-full">
+                        <i class="fas fa-check-circle text-2xl text-green-600"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tickets en Attente -->
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover border-l-4 border-yellow-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">En Attente</p>
+                        <p class="text-3xl font-bold text-gray-900" id="pendingTicketsKPI">23</p>
+                        <p class="text-yellow-600 text-xs mt-1">-8% vs période précédente</p>
+                    </div>
+                    <div class="p-3 bg-yellow-100 rounded-full">
+                        <i class="fas fa-hourglass-half text-2xl text-yellow-600"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charge de Travail -->
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover border-l-4 border-blue-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">Charge Équipes</p>
+                        <p class="text-3xl font-bold text-gray-900" id="workload">76%</p>
+                        <p class="text-blue-600 text-xs mt-1">Capacité optimale</p>
+                    </div>
+                    <div class="p-3 bg-blue-100 rounded-full">
+                        <i class="fas fa-users text-2xl text-blue-600"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prédiction Charge -->
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover border-l-4 border-purple-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">Prédiction 7j</p>
+                        <p class="text-3xl font-bold text-gray-900" id="prediction">+18%</p>
+                        <p class="text-purple-600 text-xs mt-1">Augmentation prévue</p>
+                    </div>
+                    <div class="p-3 bg-purple-100 rounded-full">
+                        <i class="fas fa-chart-line text-2xl text-purple-600"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphiques -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Évolution des Tickets -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-chart-line mr-2 text-blue-600"></i>Évolution des Tickets
+                </h3>
+                <div class="chart-container">
+                    <canvas id="ticketsEvolutionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Répartition par Catégorie -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-chart-pie mr-2 text-green-600"></i>Répartition par Catégorie
+                </h3>
+                <div class="chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Temps de Résolution -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-chart-bar mr-2 text-purple-600"></i>Temps de Résolution par Catégorie
+                </h3>
+                <div class="chart-container">
+                    <canvas id="resolutionTimeChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Performance IA -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-robot mr-2 text-indigo-600"></i>Performance IA par Catégorie
+                </h3>
+                <div class="chart-container">
+                    <canvas id="aiPerformanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tableau de Bord Temps Réel -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">
+                    <i class="fas fa-broadcast-tower mr-2 text-red-600"></i>Activité Temps Réel
+                </h3>
+                <div class="flex items-center space-x-2">
+                    <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                    <span class="text-sm text-gray-600">En direct</span>
+                </div>
+            </div>
+            <div id="realTimeActivity" class="space-y-3">
+                <!-- Activités temps réel -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notifications" class="fixed top-4 right-4 z-50"></div>
+
+    <script>
+        // Variables globales
+        let currentPeriod = 'week';
+        let charts = {};
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            loadAnalyticsData();
+            startRealTimeUpdates();
+            setPeriod('week'); // Période par défaut
+        });
+
+        // Initialisation des graphiques
+        function initializeCharts() {
+            // Graphique évolution des tickets
+            const ticketsCtx = document.getElementById('ticketsEvolutionChart').getContext('2d');
+            charts.ticketsEvolution = new Chart(ticketsCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Nouveaux Tickets',
+                        data: [],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Tickets Résolus',
+                        data: [],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Graphique répartition par catégorie
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            charts.category = new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Plomberie', 'Électricité', 'Chauffage', 'Serrurerie', 'Peinture', 'Ménage'],
+                    datasets: [{
+                        data: [35, 25, 20, 10, 7, 3],
+                        backgroundColor: [
+                            '#3b82f6',
+                            '#10b981',
+                            '#f59e0b',
+                            '#ef4444',
+                            '#8b5cf6',
+                            '#06b6d4'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+
+            // Graphique temps de résolution
+            const resolutionCtx = document.getElementById('resolutionTimeChart').getContext('2d');
+            charts.resolutionTime = new Chart(resolutionCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Plomberie', 'Électricité', 'Chauffage', 'Serrurerie', 'Peinture', 'Ménage'],
+                    datasets: [{
+                        label: 'Temps moyen (heures)',
+                        data: [3.2, 2.1, 4.5, 1.8, 6.2, 2.9],
+                        backgroundColor: [
+                            '#3b82f6',
+                            '#10b981',
+                            '#f59e0b',
+                            '#ef4444',
+                            '#8b5cf6',
+                            '#06b6d4'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Heures'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Graphique performance IA
+            const aiCtx = document.getElementById('aiPerformanceChart').getContext('2d');
+            charts.aiPerformance = new Chart(aiCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Plomberie', 'Électricité', 'Chauffage', 'Serrurerie', 'Peinture', 'Ménage'],
+                    datasets: [{
+                        label: 'Précision IA (%)',
+                        data: [95, 88, 92, 97, 85, 90],
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.2)',
+                        pointBackgroundColor: '#8b5cf6'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                stepSize: 20
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Chargement des données analytics
+        async function loadAnalyticsData() {
+            try {
+                // Simulation de données pour la démonstration
+                updateKPIs();
+                updateChartData();
+                showNotification('Données analytics mises à jour', 'success');
+            } catch (error) {
+                console.error('Erreur chargement analytics:', error);
+                showNotification('Erreur lors du chargement des données', 'error');
+            }
+        }
+
+        // Mise à jour des KPIs
+        function updateKPIs() {
+            const kpis = {
+                totalTickets: Math.floor(Math.random() * 50) + 130,
+                avgResolutionTime: (Math.random() * 2 + 1.5).toFixed(1) + 'h',
+                customerSatisfaction: (Math.random() * 0.5 + 4.5).toFixed(1) + '/5',
+                aiPerformance: (Math.random() * 5 + 92).toFixed(1) + '%',
+                resolutionRate: (Math.random() * 10 + 85).toFixed(1) + '%',
+                pendingTickets: Math.floor(Math.random() * 15) + 15,
+                workload: Math.floor(Math.random() * 20) + 70 + '%',
+                prediction: '+' + Math.floor(Math.random() * 15 + 10) + '%'
+            };
+
+            Object.keys(kpis).forEach(key => {
+                const element = document.getElementById(key + 'KPI') || document.getElementById(key);
+                if (element) {
+                    element.textContent = kpis[key];
+                }
+            });
+        }
+
+        // Mise à jour des données des graphiques
+        function updateChartData() {
+            // Données pour l'évolution des tickets
+            const days = [];
+            const newTickets = [];
+            const resolvedTickets = [];
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = moment().subtract(i, 'days');
+                days.push(date.format('DD/MM'));
+                newTickets.push(Math.floor(Math.random() * 15) + 5);
+                resolvedTickets.push(Math.floor(Math.random() * 12) + 8);
+            }
+
+            charts.ticketsEvolution.data.labels = days;
+            charts.ticketsEvolution.data.datasets[0].data = newTickets;
+            charts.ticketsEvolution.data.datasets[1].data = resolvedTickets;
+            charts.ticketsEvolution.update();
+
+            // Mise à jour des autres graphiques avec des données aléatoires
+            charts.category.data.datasets[0].data = [
+                Math.floor(Math.random() * 10) + 30,
+                Math.floor(Math.random() * 10) + 20,
+                Math.floor(Math.random() * 10) + 15,
+                Math.floor(Math.random() * 5) + 8,
+                Math.floor(Math.random() * 5) + 5,
+                Math.floor(Math.random() * 3) + 2
+            ];
+            charts.category.update();
+
+            charts.resolutionTime.data.datasets[0].data = [
+                (Math.random() * 2 + 2).toFixed(1),
+                (Math.random() * 1.5 + 1.5).toFixed(1),
+                (Math.random() * 3 + 3).toFixed(1),
+                (Math.random() * 1 + 1.5).toFixed(1),
+                (Math.random() * 4 + 4).toFixed(1),
+                (Math.random() * 2 + 2).toFixed(1)
+            ];
+            charts.resolutionTime.update();
+
+            charts.aiPerformance.data.datasets[0].data = [
+                Math.floor(Math.random() * 5) + 93,
+                Math.floor(Math.random() * 8) + 85,
+                Math.floor(Math.random() * 6) + 90,
+                Math.floor(Math.random() * 3) + 95,
+                Math.floor(Math.random() * 10) + 82,
+                Math.floor(Math.random() * 7) + 88
+            ];
+            charts.aiPerformance.update();
+        }
+
+        // Gestion des périodes
+        function setPeriod(period) {
+            currentPeriod = period;
+            
+            // Mise à jour des boutons
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.classList.remove('bg-purple-600', 'text-white');
+                btn.classList.add('bg-purple-100', 'text-purple-700');
+            });
+            
+            event.target.classList.remove('bg-purple-100', 'text-purple-700');
+            event.target.classList.add('bg-purple-600', 'text-white');
+            
+            // Recharger les données pour la nouvelle période
+            loadAnalyticsData();
+            showNotification(`Période mise à jour: ${getPeriodLabel(period)}`, 'info');
+        }
+
+        function getPeriodLabel(period) {
+            const labels = {
+                'today': "Aujourd'hui",
+                'week': '7 derniers jours',
+                'month': '30 derniers jours',
+                'quarter': '3 derniers mois'
+            };
+            return labels[period] || period;
+        }
+
+        // Activité temps réel
+        function startRealTimeUpdates() {
+            updateRealTimeActivity();
+            setInterval(updateRealTimeActivity, 10000); // Mise à jour toutes les 10 secondes
+            setInterval(updateKPIs, 30000); // Mise à jour des KPIs toutes les 30 secondes
+        }
+
+        function updateRealTimeActivity() {
+            const activities = [
+                { icon: 'fas fa-plus-circle', color: 'text-blue-600', text: 'Nouveau ticket créé: Fuite robinet cuisine', time: 'Il y a 2 min' },
+                { icon: 'fas fa-check-circle', color: 'text-green-600', text: 'Ticket résolu: Problème électrique salon', time: 'Il y a 5 min' },
+                { icon: 'fas fa-robot', color: 'text-purple-600', text: 'IA: Classification automatique réussie (96% confiance)', time: 'Il y a 7 min' },
+                { icon: 'fas fa-user', color: 'text-orange-600', text: 'Technicien assigné au ticket #1247', time: 'Il y a 12 min' },
+                { icon: 'fas fa-star', color: 'text-yellow-600', text: 'Évaluation client: 5/5 étoiles', time: 'Il y a 15 min' }
+            ];
+
+            const container = document.getElementById('realTimeActivity');
+            container.innerHTML = activities.map(activity => `
+                <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                    <div class="flex-shrink-0">
+                        <i class="${activity.icon} ${activity.color}"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-900">${activity.text}</p>
+                        <p class="text-xs text-gray-500">${activity.time}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Actualisation des données
+        function refreshData() {
+            showNotification('Actualisation des données...', 'info');
+            loadAnalyticsData();
+            updateChartData();
+        }
+
+        // Notifications
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `mb-4 p-4 rounded-lg shadow-lg transition-all duration-300 ${
+                type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' :
+                type === 'error' ? 'bg-red-100 text-red-800 border border-red-200' :
+                'bg-blue-100 text-blue-800 border border-blue-200'
+            }`;
+            
+            notification.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('notifications').appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
+

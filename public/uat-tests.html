@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tests d'Acceptation Utilisateur</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 50%, #581c87 100%);
+            position: relative;
+        }
+        
+        .test-card {
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .test-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .test-status {
+            animation: pulse 2s infinite;
+        }
+        
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        
+        .progress-ring-circle {
+            stroke-dasharray: 251.2;
+            stroke-dashoffset: 75.36; /* 70% progress */
+            transition: stroke-dashoffset 0.35s;
+        }
+        
+        .floating-check {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container flex flex-col">
+        <!-- Header -->
+        <div class="bg-black bg-opacity-30 p-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-check-double text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold text-white">Tests d'Acceptation Utilisateur</h1>
+                        <p class="text-blue-100">Validation complète avant go-live production</p>
+                    </div>
+                </div>
+                <div class="text-right text-white">
+                    <div class="text-sm opacity-75">Phase 5/5 - Go-Live</div>
+                    <div class="text-xs opacity-50">Tests UAT en cours</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <div class="grid grid-cols-3 gap-8 h-full">
+                <!-- Left Column - Test Progress -->
+                <div class="space-y-6">
+                    <div class="bg-white bg-opacity-15 rounded-xl p-6 text-center">
+                        <h2 class="text-xl font-bold text-white mb-4">Progression Globale</h2>
+                        
+                        <!-- Circular Progress -->
+                        <div class="relative w-32 h-32 mx-auto mb-4">
+                            <svg class="progress-ring w-32 h-32">
+                                <circle class="text-white opacity-20" stroke="currentColor" stroke-width="8" fill="transparent" r="40" cx="64" cy="64"/>
+                                <circle class="progress-ring-circle text-green-400" stroke="currentColor" stroke-width="8" fill="transparent" r="40" cx="64" cy="64"/>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="text-3xl font-bold text-white">87%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="text-white text-sm">
+                            <div class="flex justify-between mb-2">
+                                <span>Tests Réussis:</span>
+                                <span class="font-bold text-green-300">26/30</span>
+                            </div>
+                            <div class="flex justify-between mb-2">
+                                <span>En Cours:</span>
+                                <span class="font-bold text-yellow-300">3/30</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Restants:</span>
+                                <span class="font-bold text-blue-300">1/30</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Test Categories -->
+                    <div class="space-y-3">
+                        <h3 class="text-lg font-semibold text-white">Catégories de Tests</h3>
+                        
+                        <div class="test-card bg-green-500 bg-opacity-20 border border-green-400 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i class="fas fa-check-circle text-green-400 mr-3"></i>
+                                    <span class="text-white font-medium">Fonctionnalités Core</span>
+                                </div>
+                                <span class="text-green-300 text-sm">10/10 ✓</span>
+                            </div>
+                        </div>
+                        
+                        <div class="test-card bg-green-500 bg-opacity-20 border border-green-400 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i class="fas fa-check-circle text-green-400 mr-3"></i>
+                                    <span class="text-white font-medium">Interface Utilisateur</span>
+                                </div>
+                                <span class="text-green-300 text-sm">8/8 ✓</span>
+                            </div>
+                        </div>
+                        
+                        <div class="test-card bg-yellow-500 bg-opacity-20 border border-yellow-400 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i class="fas fa-clock text-yellow-400 mr-3 test-status"></i>
+                                    <span class="text-white font-medium">Intégrations APIs</span>
+                                </div>
+                                <span class="text-yellow-300 text-sm">7/8 ⏳</span>
+                            </div>
+                        </div>
+                        
+                        <div class="test-card bg-blue-500 bg-opacity-20 border border-blue-400 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i class="fas fa-play text-blue-400 mr-3"></i>
+                                    <span class="text-white font-medium">Performance</span>
+                                </div>
+                                <span class="text-blue-300 text-sm">1/4 ▶</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Middle Column - Current Tests -->
+                <div class="space-y-6">
+                    <h2 class="text-xl font-bold text-white flex items-center">
+                        <i class="fas fa-play-circle text-yellow-300 mr-3"></i>
+                        Tests en Cours
+                    </h2>
+                    
+                    <!-- Active Test -->
+                    <div class="bg-white bg-opacity-95 rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold text-gray-800">Test API Météo - Temps Réel</h3>
+                            <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">En cours</span>
+                        </div>
+                        
+                        <div class="space-y-3 text-sm">
+                            <div class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-gray-700">Connexion API établie</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-gray-700">Données météo récupérées</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-clock text-yellow-500 mr-2"></i>
+                                <span class="text-gray-700">Test de cache en cours...</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-circle text-gray-300 mr-2"></i>
+                                <span class="text-gray-400">Validation temps de réponse</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 bg-gray-100 rounded-lg p-3">
+                            <div class="text-xs text-gray-600 mb-1">Résultat actuel:</div>
+                            <div class="text-sm font-mono text-gray-800">
+                                {"temperature": 24, "condition": "pluvieux", "cache_hit": true, "response_time": "180ms"}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Next Tests Queue -->
+                    <div class="bg-white bg-opacity-10 rounded-xl p-6">
+                        <h3 class="font-semibold text-white mb-4">Prochains Tests</h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-blue-100">Performance sous charge</span>
+                                <span class="text-blue-300">15:30</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-blue-100">Sécurité et authentification</span>
+                                <span class="text-blue-300">16:00</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-blue-100">Validation finale UAT</span>
+                                <span class="text-blue-300">16:30</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Column - Test Results -->
+                <div class="space-y-6">
+                    <h2 class="text-xl font-bold text-white flex items-center">
+                        <i class="fas fa-clipboard-check text-green-300 mr-3"></i>
+                        Résultats Validés
+                    </h2>
+                    
+                    <!-- Success Tests -->
+                    <div class="space-y-3 max-h-96 overflow-y-auto">
+                        <div class="bg-green-500 bg-opacity-20 border border-green-400 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-white font-medium text-sm">Création Ticket IA</span>
+                                <i class="fas fa-check-circle text-green-400 floating-check"></i>
+                            </div>
+                            <div class="text-green-100 text-xs">
+                                Classification: 98.5% précision ✓
+                            </div>
+                        </div>
+                        
+                        <div class="bg-green-500 bg-opacity-20 border border-green-400 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-white font-medium text-sm">Chatbot Conversationnel</span>
+                                <i class="fas fa-check-circle text-green-400 floating-check" style="animation-delay: 0.5s;"></i>
+                            </div>
+                            <div class="text-green-100 text-xs">
+                                8 intentions détectées, escalade OK ✓
+                            </div>
+                        </div>
+                        
+                        <div class="bg-green-500 bg-opacity-20 border border-green-400 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-white font-medium text-sm">Notifications Multi-Canal</span>
+                                <i class="fas fa-check-circle text-green-400 floating-check" style="animation-delay: 1s;"></i>
+                            </div>
+                            <div class="text-green-100 text-xs">
+                                Email, SMS, Push, Slack: 100% ✓
+                            </div>
+                        </div>
+                        
+                        <div class="bg-green-500 bg-opacity-20 border border-green-400 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-white font-medium text-sm">Dashboard Analytics</span>
+                                <i class="fas fa-check-circle text-green-400 floating-check" style="animation-delay: 1.5s;"></i>
+                            </div>
+                            <div class="text-green-100 text-xs">
+                                8 KPIs temps réel, graphiques OK ✓
+                            </div>
+                        </div>
+                        
+                        <div class="bg-green-500 bg-opacity-20 border border-green-400 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-white font-medium text-sm">Portail Locataire</span>
+                                <i class="fas fa-check-circle text-green-400 floating-check" style="animation-delay: 2s;"></i>
+                            </div>
+                            <div class="text-green-100 text-xs">
+                                Mobile-first, 3 étapes, chat ✓
+                            </div>
+                        </div>
+                        
+                        <div class="bg-green-500 bg-opacity-20 border border-green-400 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-white font-medium text-sm">Reconnaissance Vocale</span>
+                                <i class="fas fa-check-circle text-green-400 floating-check" style="animation-delay: 2.5s;"></i>
+                            </div>
+                            <div class="text-green-100 text-xs">
+                                Transcription et analyse OK ✓
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Test Summary -->
+                    <div class="bg-white bg-opacity-10 rounded-xl p-6">
+                        <h3 class="font-semibold text-white mb-4">Résumé Validation</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-blue-100">Taux de réussite:</span>
+                                <span class="text-green-300 font-bold">87%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-blue-100">Temps total:</span>
+                                <span class="text-white">2h 15min</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-blue-100">Bugs critiques:</span>
+                                <span class="text-green-300 font-bold">0</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-blue-100">Prêt production:</span>
+                                <span class="text-yellow-300 font-bold">95%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="bg-black bg-opacity-30 p-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-8">
+                    <div class="flex items-center text-white">
+                        <i class="fas fa-shield-alt text-green-300 mr-2"></i>
+                        <span class="text-sm">Sécurité validée</span>
+                    </div>
+                    <div class="flex items-center text-white">
+                        <i class="fas fa-tachometer-alt text-blue-300 mr-2"></i>
+                        <span class="text-sm">Performance optimale</span>
+                    </div>
+                    <div class="flex items-center text-white">
+                        <i class="fas fa-users text-purple-300 mr-2"></i>
+                        <span class="text-sm">UX validée utilisateurs</span>
+                    </div>
+                </div>
+                <div class="text-white text-sm">
+                    <i class="fas fa-rocket mr-2 text-yellow-300"></i>
+                    Go-Live dans 30 minutes
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

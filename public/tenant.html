@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portail Locataire - Mon Logement</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .gradient-card { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .step-active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .step-completed { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .step-pending { background: #e5e7eb; }
+        .chat-bubble-user { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .chat-bubble-support { background: #f3f4f6; }
+        .mobile-first { max-width: 480px; margin: 0 auto; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Mobile-First -->
+    <nav class="gradient-bg shadow-lg">
+        <div class="mobile-first px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <i class="fas fa-home text-white text-xl mr-3"></i>
+                    <h1 class="text-white text-lg font-bold">Mon Logement</h1>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="toggleNotifications()" class="relative text-white">
+                        <i class="fas fa-bell text-lg"></i>
+                        <span id="notificationBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
+                    </button>
+                    <button onclick="toggleMenu()" class="text-white">
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Menu Mobile -->
+    <div id="mobileMenu" class="hidden bg-white shadow-lg">
+        <div class="mobile-first px-4 py-2">
+            <div class="space-y-2">
+                <button onclick="showSection('dashboard')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+                    <i class="fas fa-tachometer-alt mr-3 text-blue-600"></i>Tableau de bord
+                </button>
+                <button onclick="showSection('tickets')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+                    <i class="fas fa-ticket-alt mr-3 text-green-600"></i>Mes demandes
+                </button>
+                <button onclick="showSection('create')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+                    <i class="fas fa-plus mr-3 text-purple-600"></i>Nouvelle demande
+                </button>
+                <button onclick="showSection('chat')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+                    <i class="fas fa-comments mr-3 text-orange-600"></i>Support
+                </button>
+                <button onclick="window.location.href='/'" class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+                    <i class="fas fa-cog mr-3 text-gray-600"></i>Admin
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenu Principal -->
+    <div class="mobile-first px-4 py-6">
+        <!-- Section Dashboard -->
+        <div id="dashboardSection" class="section">
+            <!-- Bienvenue -->
+            <div class="gradient-card text-white rounded-lg p-6 mb-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold mb-2">Bonjour Marie ! 👋</h2>
+                        <p class="text-white/80">Appartement A101 - Résidence Les Jardins</p>
+                        <p class="text-white/80 text-sm mt-1">Dernière connexion: Aujourd'hui 14:30</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold">2</div>
+                        <div class="text-white/80 text-sm">Demandes actives</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistiques Rapides -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-white rounded-lg p-4 shadow-md card-hover">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-600">5</div>
+                        <div class="text-gray-600 text-sm">Total demandes</div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg p-4 shadow-md card-hover">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-green-600">3</div>
+                        <div class="text-gray-600 text-sm">Résolues</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Demandes Récentes -->
+            <div class="bg-white rounded-lg shadow-md mb-6">
+                <div class="p-4 border-b border-gray-200">
+                    <h3 class="font-semibold text-gray-900">
+                        <i class="fas fa-clock mr-2 text-blue-600"></i>Demandes Récentes
+                    </h3>
+                </div>
+                <div class="divide-y divide-gray-200">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <h4 class="font-medium text-gray-900">Fuite robinet cuisine</h4>
+                                <p class="text-gray-600 text-sm">Créée il y a 2 heures</p>
+                            </div>
+                            <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">En cours</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <h4 class="font-medium text-gray-900">Problème chauffage</h4>
+                                <p class="text-gray-600 text-sm">Créée hier</p>
+                            </div>
+                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">Assignée</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Rapides -->
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="showSection('create')" class="bg-purple-600 text-white p-4 rounded-lg card-hover">
+                    <i class="fas fa-plus text-2xl mb-2"></i>
+                    <div class="font-medium">Nouvelle demande</div>
+                </button>
+                    <button onclick="window.location.href='/chatbot.html'" class="bg-indigo-600 text-white p-4 rounded-lg card-hover">
+                        <i class="fas fa-robot text-2xl mb-2"></i>
+                        <div class="font-medium">Assistant IA</div>
+                    </button>
+            </div>
+        </div>
+
+        <!-- Section Mes Demandes -->
+        <div id="ticketsSection" class="section hidden">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold text-gray-900">Mes Demandes</h2>
+                <button onclick="showSection('create')" class="bg-purple-600 text-white px-4 py-2 rounded-lg">
+                    <i class="fas fa-plus mr-2"></i>Nouvelle
+                </button>
+            </div>
+
+            <!-- Filtres -->
+            <div class="bg-white rounded-lg p-4 mb-6 shadow-md">
+                <div class="flex space-x-2 overflow-x-auto">
+                    <button onclick="filterTickets('all')" class="filter-btn bg-purple-600 text-white px-3 py-1 rounded-full text-sm whitespace-nowrap">
+                        Toutes
+                    </button>
+                    <button onclick="filterTickets('new')" class="filter-btn bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm whitespace-nowrap">
+                        Nouvelles
+                    </button>
+                    <button onclick="filterTickets('progress')" class="filter-btn bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm whitespace-nowrap">
+                        En cours
+                    </button>
+                    <button onclick="filterTickets('resolved')" class="filter-btn bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm whitespace-nowrap">
+                        Résolues
+                    </button>
+                </div>
+            </div>
+
+            <!-- Liste des Demandes -->
+            <div id="ticketsList" class="space-y-4">
+                <!-- Demande 1 -->
+                <div class="bg-white rounded-lg shadow-md p-4 card-hover ticket-item" data-status="progress">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900">Fuite robinet cuisine</h3>
+                            <p class="text-gray-600 text-sm mt-1">Le robinet de la cuisine fuit depuis ce matin</p>
+                        </div>
+                        <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">En cours</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm text-gray-500">
+                        <span><i class="fas fa-calendar mr-1"></i>05/06/2025 14:30</span>
+                        <span><i class="fas fa-wrench mr-1"></i>Plomberie</span>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between">
+                        <div class="text-sm">
+                            <span class="text-gray-600">Technicien:</span>
+                            <span class="font-medium">Jean Dupont</span>
+                        </div>
+                        <button onclick="showTicketDetails(1)" class="text-purple-600 text-sm font-medium">
+                            Voir détails
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Demande 2 -->
+                <div class="bg-white rounded-lg shadow-md p-4 card-hover ticket-item" data-status="new">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900">Problème chauffage salon</h3>
+                            <p class="text-gray-600 text-sm mt-1">Le radiateur ne chauffe plus depuis hier</p>
+                        </div>
+                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">Assignée</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm text-gray-500">
+                        <span><i class="fas fa-calendar mr-1"></i>04/06/2025 16:45</span>
+                        <span><i class="fas fa-fire mr-1"></i>Chauffage</span>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between">
+                        <div class="text-sm">
+                            <span class="text-gray-600">Priorité:</span>
+                            <span class="font-medium text-red-600">Élevée</span>
+                        </div>
+                        <button onclick="showTicketDetails(2)" class="text-purple-600 text-sm font-medium">
+                            Voir détails
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Demande 3 -->
+                <div class="bg-white rounded-lg shadow-md p-4 card-hover ticket-item" data-status="resolved">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900">Ampoule grillée entrée</h3>
+                            <p class="text-gray-600 text-sm mt-1">Remplacement ampoule LED dans l'entrée</p>
+                        </div>
+                        <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">Résolue</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm text-gray-500">
+                        <span><i class="fas fa-calendar mr-1"></i>03/06/2025 09:15</span>
+                        <span><i class="fas fa-bolt mr-1"></i>Électricité</span>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between">
+                        <div class="text-sm">
+                            <span class="text-gray-600">Résolu en:</span>
+                            <span class="font-medium text-green-600">2h 30min</span>
+                        </div>
+                        <button onclick="rateTicket(3)" class="text-orange-600 text-sm font-medium">
+                            <i class="fas fa-star mr-1"></i>Évaluer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Création Demande -->
+        <div id="createSection" class="section hidden">
+            <div class="flex items-center mb-6">
+                <button onclick="showSection('dashboard')" class="text-gray-600 mr-4">
+                    <i class="fas fa-arrow-left text-lg"></i>
+                </button>
+                <h2 class="text-xl font-bold text-gray-900">Nouvelle Demande</h2>
+            </div>
+
+            <!-- Étapes -->
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center">
+                    <div class="step-active text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                    <div class="text-sm font-medium text-purple-600 ml-2">Type</div>
+                </div>
+                <div class="flex-1 h-1 bg-gray-200 mx-4"></div>
+                <div class="flex items-center">
+                    <div class="step-pending text-gray-500 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                    <div class="text-sm text-gray-500 ml-2">Détails</div>
+                </div>
+                <div class="flex-1 h-1 bg-gray-200 mx-4"></div>
+                <div class="flex items-center">
+                    <div class="step-pending text-gray-500 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                    <div class="text-sm text-gray-500 ml-2">Confirmation</div>
+                </div>
+            </div>
+
+            <!-- Formulaire Étape 1 -->
+            <div id="step1" class="step-content">
+                <h3 class="text-lg font-semibold mb-4">Quel est le type de problème ?</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="selectCategory('plomberie')" class="category-btn bg-white border-2 border-gray-200 p-4 rounded-lg text-center card-hover">
+                        <i class="fas fa-wrench text-2xl text-blue-600 mb-2"></i>
+                        <div class="font-medium">Plomberie</div>
+                    </button>
+                    <button onclick="selectCategory('electricite')" class="category-btn bg-white border-2 border-gray-200 p-4 rounded-lg text-center card-hover">
+                        <i class="fas fa-bolt text-2xl text-yellow-600 mb-2"></i>
+                        <div class="font-medium">Électricité</div>
+                    </button>
+                    <button onclick="selectCategory('chauffage')" class="category-btn bg-white border-2 border-gray-200 p-4 rounded-lg text-center card-hover">
+                        <i class="fas fa-fire text-2xl text-red-600 mb-2"></i>
+                        <div class="font-medium">Chauffage</div>
+                    </button>
+                    <button onclick="selectCategory('serrurerie')" class="category-btn bg-white border-2 border-gray-200 p-4 rounded-lg text-center card-hover">
+                        <i class="fas fa-key text-2xl text-green-600 mb-2"></i>
+                        <div class="font-medium">Serrurerie</div>
+                    </button>
+                    <button onclick="selectCategory('peinture')" class="category-btn bg-white border-2 border-gray-200 p-4 rounded-lg text-center card-hover">
+                        <i class="fas fa-paint-brush text-2xl text-purple-600 mb-2"></i>
+                        <div class="font-medium">Peinture</div>
+                    </button>
+                    <button onclick="selectCategory('autre')" class="category-btn bg-white border-2 border-gray-200 p-4 rounded-lg text-center card-hover">
+                        <i class="fas fa-tools text-2xl text-gray-600 mb-2"></i>
+                        <div class="font-medium">Autre</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Formulaire Étape 2 -->
+            <div id="step2" class="step-content hidden">
+                <h3 class="text-lg font-semibold mb-4">Décrivez le problème</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Titre de la demande</label>
+                        <input type="text" id="ticketTitle" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Ex: Fuite robinet cuisine">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description détaillée</label>
+                        <textarea id="ticketDescription" rows="4" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Décrivez le problème en détail..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Urgence</label>
+                        <select id="urgencyLevel" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                            <option value="low">Faible - Peut attendre quelques jours</option>
+                            <option value="medium">Moyenne - À traiter dans la journée</option>
+                            <option value="high">Élevée - Urgent, problème gênant</option>
+                            <option value="critical">Critique - Urgence absolue</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Photos (optionnel)</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                            <i class="fas fa-camera text-3xl text-gray-400 mb-2"></i>
+                            <p class="text-gray-600">Appuyez pour ajouter des photos</p>
+                            <input type="file" multiple accept="image/*" class="hidden" id="photoUpload">
+                        </div>
+                    </div>
+                </div>
+                <div class="flex space-x-3 mt-6">
+                    <button onclick="previousStep()" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-medium">
+                        Précédent
+                    </button>
+                    <button onclick="nextStep()" class="flex-1 bg-purple-600 text-white py-3 rounded-lg font-medium">
+                        Suivant
+                    </button>
+                </div>
+            </div>
+
+            <!-- Formulaire Étape 3 -->
+            <div id="step3" class="step-content hidden">
+                <h3 class="text-lg font-semibold mb-4">Confirmation</h3>
+                <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                    <h4 class="font-medium mb-3">Résumé de votre demande :</h4>
+                    <div class="space-y-2 text-sm">
+                        <div><span class="font-medium">Catégorie:</span> <span id="summaryCategory">-</span></div>
+                        <div><span class="font-medium">Titre:</span> <span id="summaryTitle">-</span></div>
+                        <div><span class="font-medium">Urgence:</span> <span id="summaryUrgency">-</span></div>
+                        <div><span class="font-medium">Description:</span> <span id="summaryDescription">-</span></div>
+                    </div>
+                </div>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-600 mt-1 mr-3"></i>
+                        <div class="text-sm text-blue-800">
+                            <p class="font-medium mb-1">Estimation automatique :</p>
+                            <p>Temps de résolution estimé : <span class="font-bold">2-4 heures</span></p>
+                            <p>Un technicien sera assigné dans les <span class="font-bold">30 minutes</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex space-x-3">
+                    <button onclick="previousStep()" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-medium">
+                        Modifier
+                    </button>
+                    <button onclick="submitTicket()" class="flex-1 bg-green-600 text-white py-3 rounded-lg font-medium">
+                        <i class="fas fa-check mr-2"></i>Confirmer
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Chat Support -->
+        <div id="chatSection" class="section hidden">
+            <div class="flex items-center mb-6">
+                <button onclick="showSection('dashboard')" class="text-gray-600 mr-4">
+                    <i class="fas fa-arrow-left text-lg"></i>
+                </button>
+                <h2 class="text-xl font-bold text-gray-900">Support Chat</h2>
+                <div class="ml-auto flex items-center">
+                    <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                    <span class="text-sm text-gray-600">En ligne</span>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div id="chatMessages" class="bg-white rounded-lg shadow-md h-96 overflow-y-auto p-4 mb-4">
+                <div class="space-y-4">
+                    <!-- Message Support -->
+                    <div class="flex items-start">
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">
+                            S
+                        </div>
+                        <div class="chat-bubble-support rounded-lg p-3 max-w-xs">
+                            <p class="text-sm">Bonjour Marie ! Je suis Sophie, votre assistante support. Comment puis-je vous aider aujourd'hui ?</p>
+                            <p class="text-xs text-gray-500 mt-1">14:30</p>
+                        </div>
+                    </div>
+
+                    <!-- Message Utilisateur -->
+                    <div class="flex items-start justify-end">
+                        <div class="chat-bubble-user text-white rounded-lg p-3 max-w-xs">
+                            <p class="text-sm">Bonjour, j'ai un problème avec ma demande de réparation du robinet</p>
+                            <p class="text-xs text-white/80 mt-1">14:32</p>
+                        </div>
+                        <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold ml-3">
+                            M
+                        </div>
+                    </div>
+
+                    <!-- Message Support -->
+                    <div class="flex items-start">
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">
+                            S
+                        </div>
+                        <div class="chat-bubble-support rounded-lg p-3 max-w-xs">
+                            <p class="text-sm">Je vois votre demande #1247 pour la fuite du robinet cuisine. Le technicien Jean Dupont est en route et devrait arriver vers 16h. Avez-vous d'autres questions ?</p>
+                            <p class="text-xs text-gray-500 mt-1">14:33</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zone de saisie -->
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <div class="flex items-center space-x-3">
+                    <input type="text" id="chatInput" placeholder="Tapez votre message..." class="flex-1 border border-gray-300 rounded-lg px-3 py-2">
+                    <button onclick="sendMessage()" class="bg-purple-600 text-white p-2 rounded-lg">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Panel -->
+    <div id="notificationsPanel" class="fixed top-16 right-4 w-80 bg-white rounded-lg shadow-xl hidden z-50">
+        <div class="p-4 border-b border-gray-200">
+            <h3 class="font-semibold text-gray-900">Notifications</h3>
+        </div>
+        <div class="max-h-96 overflow-y-auto">
+            <div class="p-4 border-b border-gray-100">
+                <div class="flex items-start">
+                    <i class="fas fa-user-check text-green-600 mt-1 mr-3"></i>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium">Technicien assigné</p>
+                        <p class="text-xs text-gray-600">Jean Dupont a été assigné à votre demande</p>
+                        <p class="text-xs text-gray-500 mt-1">Il y a 15 min</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-b border-gray-100">
+                <div class="flex items-start">
+                    <i class="fas fa-clock text-blue-600 mt-1 mr-3"></i>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium">Mise à jour statut</p>
+                        <p class="text-xs text-gray-600">Votre demande est en cours de traitement</p>
+                        <p class="text-xs text-gray-500 mt-1">Il y a 1h</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4">
+                <div class="flex items-start">
+                    <i class="fas fa-star text-yellow-600 mt-1 mr-3"></i>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium">Évaluation demandée</p>
+                        <p class="text-xs text-gray-600">Évaluez la réparation de l'ampoule</p>
+                        <p class="text-xs text-gray-500 mt-1">Hier</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentStep = 1;
+        let selectedCategory = '';
+        let currentSection = 'dashboard';
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('dashboard');
+        });
+
+        // Navigation
+        function showSection(section) {
+            // Masquer toutes les sections
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            
+            // Afficher la section demandée
+            document.getElementById(section + 'Section').classList.remove('hidden');
+            currentSection = section;
+            
+            // Fermer le menu mobile
+            document.getElementById('mobileMenu').classList.add('hidden');
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function toggleNotifications() {
+            const panel = document.getElementById('notificationsPanel');
+            panel.classList.toggle('hidden');
+        }
+
+        // Gestion des étapes de création
+        function selectCategory(category) {
+            selectedCategory = category;
+            
+            // Mettre à jour l'apparence des boutons
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('border-purple-600', 'bg-purple-50');
+                btn.classList.add('border-gray-200');
+            });
+            
+            event.target.closest('.category-btn').classList.add('border-purple-600', 'bg-purple-50');
+            event.target.closest('.category-btn').classList.remove('border-gray-200');
+            
+            // Passer à l'étape suivante après un délai
+            setTimeout(() => {
+                nextStep();
+            }, 500);
+        }
+
+        function nextStep() {
+            if (currentStep < 3) {
+                // Masquer l'étape actuelle
+                document.getElementById('step' + currentStep).classList.add('hidden');
+                
+                // Passer à l'étape suivante
+                currentStep++;
+                
+                // Afficher la nouvelle étape
+                document.getElementById('step' + currentStep).classList.remove('hidden');
+                
+                // Mettre à jour les indicateurs d'étapes
+                updateStepIndicators();
+                
+                // Si étape 3, remplir le résumé
+                if (currentStep === 3) {
+                    fillSummary();
+                }
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                // Masquer l'étape actuelle
+                document.getElementById('step' + currentStep).classList.add('hidden');
+                
+                // Revenir à l'étape précédente
+                currentStep--;
+                
+                // Afficher l'étape précédente
+                document.getElementById('step' + currentStep).classList.remove('hidden');
+                
+                // Mettre à jour les indicateurs d'étapes
+                updateStepIndicators();
+            }
+        }
+
+        function updateStepIndicators() {
+            for (let i = 1; i <= 3; i++) {
+                const indicator = document.querySelector(`.step-content:nth-child(${i + 3}) .step-active, .step-content:nth-child(${i + 3}) .step-completed, .step-content:nth-child(${i + 3}) .step-pending`);
+                // Logique de mise à jour des indicateurs (simplifiée pour la démo)
+            }
+        }
+
+        function fillSummary() {
+            document.getElementById('summaryCategory').textContent = selectedCategory || '-';
+            document.getElementById('summaryTitle').textContent = document.getElementById('ticketTitle').value || '-';
+            document.getElementById('summaryUrgency').textContent = document.getElementById('urgencyLevel').selectedOptions[0].text || '-';
+            document.getElementById('summaryDescription').textContent = document.getElementById('ticketDescription').value || '-';
+        }
+
+        async function submitTicket() {
+            try {
+                // Simulation de création de ticket
+                showNotification('Demande créée avec succès !', 'success');
+                
+                // Réinitialiser le formulaire
+                currentStep = 1;
+                selectedCategory = '';
+                document.getElementById('step3').classList.add('hidden');
+                document.getElementById('step1').classList.remove('hidden');
+                
+                // Retourner au dashboard
+                setTimeout(() => {
+                    showSection('dashboard');
+                }, 1500);
+                
+            } catch (error) {
+                showNotification('Erreur lors de la création de la demande', 'error');
+            }
+        }
+
+        // Filtrage des tickets
+        function filterTickets(status) {
+            // Mettre à jour les boutons de filtre
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-purple-600', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            
+            event.target.classList.remove('bg-gray-200', 'text-gray-700');
+            event.target.classList.add('bg-purple-600', 'text-white');
+            
+            // Filtrer les tickets
+            document.querySelectorAll('.ticket-item').forEach(item => {
+                if (status === 'all' || item.dataset.status === status) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Chat
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                // Ajouter le message utilisateur
+                addChatMessage(message, 'user');
+                input.value = '';
+                
+                // Simuler une réponse du support
+                setTimeout(() => {
+                    const responses = [
+                        "Merci pour votre message. Je vérifie cela pour vous.",
+                        "Je comprends votre préoccupation. Laissez-moi vous aider.",
+                        "Parfait ! Je vais transmettre cette information au technicien.",
+                        "Y a-t-il autre chose que je puisse faire pour vous ?"
+                    ];
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    addChatMessage(randomResponse, 'support');
+                }, 1000);
+            }
+        }
+
+        function addChatMessage(message, sender) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const time = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            
+            const messageDiv = document.createElement('div');
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `
+                    <div class="flex items-start justify-end">
+                        <div class="chat-bubble-user text-white rounded-lg p-3 max-w-xs">
+                            <p class="text-sm">${message}</p>
+                            <p class="text-xs text-white/80 mt-1">${time}</p>
+                        </div>
+                        <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold ml-3">
+                            M
+                        </div>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="flex items-start">
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">
+                            S
+                        </div>
+                        <div class="chat-bubble-support rounded-lg p-3 max-w-xs">
+                            <p class="text-sm">${message}</p>
+                            <p class="text-xs text-gray-500 mt-1">${time}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Gestion des événements
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Fonctions utilitaires
+        function showTicketDetails(id) {
+            showNotification('Détails du ticket #' + id, 'info');
+        }
+
+        function rateTicket(id) {
+            showNotification('Évaluation du ticket #' + id, 'info');
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 left-4 right-4 p-4 rounded-lg shadow-lg z-50 transition-all duration-300 ${
+                type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' :
+                type === 'error' ? 'bg-red-100 text-red-800 border border-red-200' :
+                'bg-blue-100 text-blue-800 border border-blue-200'
+            }`;
+            
+            notification.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+

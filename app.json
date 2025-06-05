@@ -1,0 +1,30 @@
+{
+  "name": "ticket-system-pilot",
+  "env": "production",
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql:mini"
+    }
+  ],
+  "scripts": {
+    "postdeploy": "npm run migrate"
+  },
+  "environments": {
+    "production": {
+      "NODE_ENV": "production",
+      "INIT_DB": "true"
+    }
+  }
+}
+

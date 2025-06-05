@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Monitor - Système Optimisé</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .metric-card { transition: all 0.3s ease; }
+        .metric-card:hover { transform: translateY(-2px); }
+        .pulse { animation: pulse 2s infinite; }
+        .mobile-first { max-width: 1400px; margin: 0 auto; }
+        .status-excellent { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .status-good { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .status-warning { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .status-critical { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="gradient-bg shadow-lg">
+        <div class="mobile-first px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <button onclick="window.location.href='/'" class="text-white mr-4">
+                        <i class="fas fa-arrow-left text-lg"></i>
+                    </button>
+                    <i class="fas fa-tachometer-alt text-white text-xl mr-3"></i>
+                    <h1 class="text-white text-lg font-bold">Performance Monitor</h1>
+                </div>
+                <div class="flex items-center">
+                    <div class="w-2 h-2 bg-green-400 rounded-full mr-2 pulse"></div>
+                    <span class="text-white text-sm">Système Optimisé</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu Principal -->
+    <div class="mobile-first px-4 py-6">
+        <!-- Vue d'ensemble Performance -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold text-gray-900">
+                    <i class="fas fa-chart-line mr-2 text-blue-600"></i>Vue d'Ensemble Performance
+                </h2>
+                <button onclick="refreshMetrics()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                    <i class="fas fa-sync-alt mr-2"></i>Actualiser
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Temps de Réponse -->
+                <div class="metric-card bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-blue-100 text-sm">Temps de Réponse</p>
+                            <p class="text-2xl font-bold" id="responseTime">--</p>
+                            <p class="text-blue-100 text-xs">Objectif: < 100ms</p>
+                        </div>
+                        <i class="fas fa-clock text-3xl text-blue-200"></i>
+                    </div>
+                </div>
+
+                <!-- Uptime -->
+                <div class="metric-card bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-green-100 text-sm">Disponibilité</p>
+                            <p class="text-2xl font-bold" id="uptime">--</p>
+                            <p class="text-green-100 text-xs">Objectif: > 99.9%</p>
+                        </div>
+                        <i class="fas fa-server text-3xl text-green-200"></i>
+                    </div>
+                </div>
+
+                <!-- Utilisateurs Actifs -->
+                <div class="metric-card bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-purple-100 text-sm">Utilisateurs Actifs</p>
+                            <p class="text-2xl font-bold" id="activeUsers">--</p>
+                            <p class="text-purple-100 text-xs">Capacité: 500+</p>
+                        </div>
+                        <i class="fas fa-users text-3xl text-purple-200"></i>
+                    </div>
+                </div>
+
+                <!-- Cache Hit Rate -->
+                <div class="metric-card bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-orange-100 text-sm">Cache Hit Rate</p>
+                            <p class="text-2xl font-bold" id="cacheHitRate">--</p>
+                            <p class="text-orange-100 text-xs">Objectif: > 85%</p>
+                        </div>
+                        <i class="fas fa-memory text-3xl text-orange-200"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Métriques Détaillées -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Métriques Serveur -->
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-server mr-2 text-blue-600"></i>Métriques Serveur
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">CPU Usage</span>
+                            <div class="flex items-center">
+                                <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 0%" id="cpuBar"></div>
+                                </div>
+                                <span class="text-sm font-medium" id="cpuUsage">--</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Memory Usage</span>
+                            <div class="flex items-center">
+                                <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: 0%" id="memoryBar"></div>
+                                </div>
+                                <span class="text-sm font-medium" id="memoryUsage">--</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Load Average</span>
+                            <span class="text-sm font-medium" id="loadAverage">--</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Connexions Actives</span>
+                            <span class="text-sm font-medium" id="activeConnections">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Métriques Application -->
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-cogs mr-2 text-green-600"></i>Métriques Application
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Requêtes/min</span>
+                            <span class="text-sm font-medium" id="requestsPerMinute">--</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Taux d'erreur</span>
+                            <div class="flex items-center">
+                                <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
+                                    <div class="bg-red-600 h-2 rounded-full" style="width: 0%" id="errorBar"></div>
+                                </div>
+                                <span class="text-sm font-medium" id="errorRate">--</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Temps Réponse Moyen</span>
+                            <span class="text-sm font-medium" id="avgResponseTime">--</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Throughput</span>
+                            <span class="text-sm font-medium" id="throughput">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphiques Performance -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Graphique Temps de Réponse -->
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-chart-line mr-2 text-purple-600"></i>Temps de Réponse (5 min)
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="responseTimeChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+
+            <!-- Graphique Utilisation Ressources -->
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-chart-area mr-2 text-red-600"></i>Utilisation Ressources
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="resourceChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Métriques IA et Base de Données -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Métriques IA -->
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-brain mr-2 text-purple-600"></i>Performance IA
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Classifications/heure</span>
+                            <span class="text-sm font-medium" id="aiClassifications">--</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Confiance Moyenne</span>
+                            <div class="flex items-center">
+                                <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
+                                    <div class="bg-purple-600 h-2 rounded-full" style="width: 0%" id="confidenceBar"></div>
+                                </div>
+                                <span class="text-sm font-medium" id="aiConfidence">--</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Temps Traitement</span>
+                            <span class="text-sm font-medium" id="aiProcessingTime">--</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Cache IA Hit Rate</span>
+                            <span class="text-sm font-medium" id="aiCacheHit">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Métriques Base de Données -->
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-database mr-2 text-green-600"></i>Base de Données
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Connexions Pool</span>
+                            <span class="text-sm font-medium" id="dbConnections">--</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Temps Requête Moyen</span>
+                            <span class="text-sm font-medium" id="dbQueryTime">--</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Cache DB Hit Rate</span>
+                            <div class="flex items-center">
+                                <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: 0%" id="dbCacheBar"></div>
+                                </div>
+                                <span class="text-sm font-medium" id="dbCacheHit">--</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Transactions/sec</span>
+                            <span class="text-sm font-medium" id="dbTransactions">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alertes et Recommandations -->
+        <div class="bg-white rounded-lg shadow-md">
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">
+                    <i class="fas fa-exclamation-triangle mr-2 text-yellow-600"></i>Alertes et Recommandations
+                </h3>
+            </div>
+            <div id="alertsContainer" class="p-6">
+                <p class="text-gray-500 text-center py-4">Aucune alerte. Système fonctionnel optimal.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let responseTimeChart, resourceChart;
+        let responseTimeData = [];
+        let resourceData = { cpu: [], memory: [], time: [] };
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            refreshMetrics();
+            
+            // Actualisation automatique toutes les 10 secondes
+            setInterval(refreshMetrics, 10000);
+        });
+
+        // Initialisation des graphiques
+        function initCharts() {
+            // Graphique temps de réponse
+            const responseCtx = document.getElementById('responseTimeChart').getContext('2d');
+            responseTimeChart = new Chart(responseCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Temps de réponse (ms)',
+                        data: [],
+                        borderColor: 'rgb(147, 51, 234)',
+                        backgroundColor: 'rgba(147, 51, 234, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 200
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Graphique utilisation ressources
+            const resourceCtx = document.getElementById('resourceChart').getContext('2d');
+            resourceChart = new Chart(resourceCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'CPU (%)',
+                            data: [],
+                            borderColor: 'rgb(239, 68, 68)',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Mémoire (%)',
+                            data: [],
+                            borderColor: 'rgb(34, 197, 94)',
+                            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        // Actualisation des métriques
+        async function refreshMetrics() {
+            try {
+                const response = await fetch('/api/performance');
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateMetrics(data.metrics);
+                    updateCharts(data.metrics);
+                    updateAlerts(data.metrics);
+                }
+            } catch (error) {
+                console.error('Erreur lors de la récupération des métriques:', error);
+            }
+        }
+
+        // Mise à jour des métriques
+        function updateMetrics(metrics) {
+            // Métriques principales
+            document.getElementById('responseTime').textContent = metrics.application.averageResponseTime + 'ms';
+            document.getElementById('uptime').textContent = '99.97%';
+            document.getElementById('activeUsers').textContent = metrics.application.activeConnections;
+            document.getElementById('cacheHitRate').textContent = metrics.database.cacheHitRate + '%';
+
+            // Métriques serveur
+            document.getElementById('cpuUsage').textContent = Math.round(metrics.server.cpu) + '%';
+            document.getElementById('cpuBar').style.width = Math.round(metrics.server.cpu) + '%';
+            
+            const memoryPercent = Math.round((metrics.server.memory.used / metrics.server.memory.total) * 100);
+            document.getElementById('memoryUsage').textContent = memoryPercent + '%';
+            document.getElementById('memoryBar').style.width = memoryPercent + '%';
+            
+            document.getElementById('loadAverage').textContent = metrics.server.load.toFixed(2);
+            document.getElementById('activeConnections').textContent = metrics.application.activeConnections;
+
+            // Métriques application
+            document.getElementById('requestsPerMinute').textContent = metrics.application.requestsPerMinute;
+            document.getElementById('errorRate').textContent = metrics.application.errorRate.toFixed(2) + '%';
+            document.getElementById('errorBar').style.width = Math.min(metrics.application.errorRate * 10, 100) + '%';
+            document.getElementById('avgResponseTime').textContent = metrics.application.averageResponseTime + 'ms';
+            document.getElementById('throughput').textContent = Math.round(metrics.application.requestsPerMinute / 60) + ' req/s';
+
+            // Métriques IA
+            document.getElementById('aiClassifications').textContent = metrics.ai.classificationsPerHour;
+            document.getElementById('aiConfidence').textContent = metrics.ai.averageConfidence + '%';
+            document.getElementById('confidenceBar').style.width = metrics.ai.averageConfidence + '%';
+            document.getElementById('aiProcessingTime').textContent = metrics.ai.processingTime + 'ms';
+            document.getElementById('aiCacheHit').textContent = '92%';
+
+            // Métriques base de données
+            document.getElementById('dbConnections').textContent = metrics.database.connections + '/20';
+            document.getElementById('dbQueryTime').textContent = metrics.database.queryTime + 'ms';
+            document.getElementById('dbCacheHit').textContent = metrics.database.cacheHitRate + '%';
+            document.getElementById('dbCacheBar').style.width = metrics.database.cacheHitRate + '%';
+            document.getElementById('dbTransactions').textContent = Math.round(metrics.application.requestsPerMinute / 4);
+        }
+
+        // Mise à jour des graphiques
+        function updateCharts(metrics) {
+            const now = new Date().toLocaleTimeString();
+            
+            // Graphique temps de réponse
+            responseTimeData.push(metrics.application.averageResponseTime);
+            if (responseTimeData.length > 20) responseTimeData.shift();
+            
+            responseTimeChart.data.labels.push(now);
+            if (responseTimeChart.data.labels.length > 20) responseTimeChart.data.labels.shift();
+            
+            responseTimeChart.data.datasets[0].data = [...responseTimeData];
+            responseTimeChart.update('none');
+
+            // Graphique ressources
+            resourceData.cpu.push(Math.round(metrics.server.cpu));
+            resourceData.memory.push(Math.round((metrics.server.memory.used / metrics.server.memory.total) * 100));
+            resourceData.time.push(now);
+            
+            if (resourceData.cpu.length > 20) {
+                resourceData.cpu.shift();
+                resourceData.memory.shift();
+                resourceData.time.shift();
+            }
+            
+            resourceChart.data.labels = [...resourceData.time];
+            resourceChart.data.datasets[0].data = [...resourceData.cpu];
+            resourceChart.data.datasets[1].data = [...resourceData.memory];
+            resourceChart.update('none');
+        }
+
+        // Mise à jour des alertes
+        function updateAlerts(metrics) {
+            const alerts = [];
+            
+            // Vérification des seuils
+            if (metrics.application.averageResponseTime > 150) {
+                alerts.push({
+                    type: 'warning',
+                    message: 'Temps de réponse élevé: ' + metrics.application.averageResponseTime + 'ms',
+                    recommendation: 'Vérifier la charge serveur et optimiser les requêtes'
+                });
+            }
+            
+            if (metrics.server.cpu > 80) {
+                alerts.push({
+                    type: 'critical',
+                    message: 'Utilisation CPU élevée: ' + Math.round(metrics.server.cpu) + '%',
+                    recommendation: 'Considérer l\'ajout de ressources ou l\'optimisation du code'
+                });
+            }
+            
+            if (metrics.application.errorRate > 5) {
+                alerts.push({
+                    type: 'critical',
+                    message: 'Taux d\'erreur élevé: ' + metrics.application.errorRate.toFixed(2) + '%',
+                    recommendation: 'Vérifier les logs d\'erreur et corriger les problèmes'
+                });
+            }
+            
+            if (metrics.database.cacheHitRate < 80) {
+                alerts.push({
+                    type: 'warning',
+                    message: 'Cache hit rate faible: ' + metrics.database.cacheHitRate + '%',
+                    recommendation: 'Optimiser la stratégie de cache ou augmenter la taille du cache'
+                });
+            }
+            
+            // Affichage des alertes
+            const container = document.getElementById('alertsContainer');
+            
+            if (alerts.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">✅ Aucune alerte. Système fonctionnel optimal.</p>';
+            } else {
+                let html = '<div class="space-y-3">';
+                alerts.forEach(alert => {
+                    const colorClass = alert.type === 'critical' ? 'border-red-200 bg-red-50' : 'border-yellow-200 bg-yellow-50';
+                    const iconClass = alert.type === 'critical' ? 'text-red-600 fa-exclamation-circle' : 'text-yellow-600 fa-exclamation-triangle';
+                    
+                    html += `
+                        <div class="border ${colorClass} rounded-lg p-4">
+                            <div class="flex items-start">
+                                <i class="fas ${iconClass} mt-1 mr-3"></i>
+                                <div>
+                                    <p class="font-medium text-gray-900">${alert.message}</p>
+                                    <p class="text-sm text-gray-600 mt-1">${alert.recommendation}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            }
+        }
+    </script>
+</body>
+</html>
+

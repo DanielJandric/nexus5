@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Rapports - Système Avancé</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .report-card { transition: all 0.3s ease; }
+        .report-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .mobile-first { max-width: 1400px; margin: 0 auto; }
+        .voice-recording { animation: pulse 1.5s infinite; }
+        .calendar-day { transition: all 0.2s ease; }
+        .calendar-day:hover { background: #f3f4f6; }
+        .maintenance-event { border-left: 4px solid #3b82f6; }
+        .urgent-event { border-left: 4px solid #ef4444; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="gradient-bg shadow-lg">
+        <div class="mobile-first px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <button onclick="window.location.href='/'" class="text-white mr-4">
+                        <i class="fas fa-arrow-left text-lg"></i>
+                    </button>
+                    <i class="fas fa-chart-bar text-white text-xl mr-3"></i>
+                    <h1 class="text-white text-lg font-bold">Fonctionnalités Avancées</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                    <span class="text-white text-sm">Système Avancé</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu Principal -->
+    <div class="mobile-first px-4 py-6">
+        <!-- Menu des Fonctionnalités -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Générateur de Rapports -->
+            <div class="report-card bg-white rounded-lg shadow-md p-6 cursor-pointer" onclick="showReports()">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-file-alt text-blue-600 text-xl"></i>
+                    </div>
+                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Nouveau</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Générateur de Rapports</h3>
+                <p class="text-gray-600 text-sm mb-4">Créez des rapports personnalisés avec export PDF/Excel automatique</p>
+                <div class="flex items-center text-blue-600 text-sm">
+                    <span>Accéder</span>
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </div>
+            </div>
+
+            <!-- Calendrier de Maintenance -->
+            <div class="report-card bg-white rounded-lg shadow-md p-6 cursor-pointer" onclick="showCalendar()">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-calendar-alt text-green-600 text-xl"></i>
+                    </div>
+                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Nouveau</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Calendrier Maintenance</h3>
+                <p class="text-gray-600 text-sm mb-4">Planification intelligente et maintenance préventive</p>
+                <div class="flex items-center text-green-600 text-sm">
+                    <span>Accéder</span>
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </div>
+            </div>
+
+            <!-- Reconnaissance Vocale -->
+            <div class="report-card bg-white rounded-lg shadow-md p-6 cursor-pointer" onclick="showVoice()">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-microphone text-purple-600 text-xl"></i>
+                    </div>
+                    <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">IA</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Reconnaissance Vocale</h3>
+                <p class="text-gray-600 text-sm mb-4">Créez des tickets par commande vocale avec IA</p>
+                <div class="flex items-center text-purple-600 text-sm">
+                    <span>Accéder</span>
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </div>
+            </div>
+
+            <!-- Géolocalisation -->
+            <div class="report-card bg-white rounded-lg shadow-md p-6 cursor-pointer" onclick="showMaps()">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-map-marker-alt text-red-600 text-xl"></i>
+                    </div>
+                    <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">GPS</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Géolocalisation</h3>
+                <p class="text-gray-600 text-sm mb-4">Cartes interactives et optimisation des trajets</p>
+                <div class="flex items-center text-red-600 text-sm">
+                    <span>Accéder</span>
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </div>
+            </div>
+
+            <!-- Scan Documents -->
+            <div class="report-card bg-white rounded-lg shadow-md p-6 cursor-pointer" onclick="showScan()">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-camera text-orange-600 text-xl"></i>
+                    </div>
+                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">OCR</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Scan Documents</h3>
+                <p class="text-gray-600 text-sm mb-4">Reconnaissance de texte et analyse d'images IA</p>
+                <div class="flex items-center text-orange-600 text-sm">
+                    <span>Accéder</span>
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </div>
+            </div>
+
+            <!-- Workflow Approbation -->
+            <div class="report-card bg-white rounded-lg shadow-md p-6 cursor-pointer" onclick="showWorkflow()">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-sitemap text-indigo-600 text-xl"></i>
+                    </div>
+                    <span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full">Pro</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Workflow Approbation</h3>
+                <p class="text-gray-600 text-sm mb-4">Processus d'approbation automatisés et personnalisables</p>
+                <div class="flex items-center text-indigo-600 text-sm">
+                    <span>Accéder</span>
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Générateur de Rapports -->
+        <div id="reportsSection" class="hidden">
+            <div class="bg-white rounded-lg shadow-md mb-8">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-900">
+                        <i class="fas fa-file-alt mr-2 text-blue-600"></i>Générateur de Rapports Personnalisés
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Configuration du Rapport -->
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Configuration</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Type de Rapport</label>
+                                    <select id="reportType" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                        <option value="performance">Rapport de Performance</option>
+                                        <option value="tickets">Analyse des Tickets</option>
+                                        <option value="satisfaction">Satisfaction Client</option>
+                                        <option value="maintenance">Maintenance Préventive</option>
+                                        <option value="financier">Rapport Financier</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Période</label>
+                                    <select id="reportPeriod" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                        <option value="week">Cette semaine</option>
+                                        <option value="month">Ce mois</option>
+                                        <option value="quarter">Ce trimestre</option>
+                                        <option value="year">Cette année</option>
+                                        <option value="custom">Période personnalisée</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Format d'Export</label>
+                                    <div class="flex space-x-4">
+                                        <label class="flex items-center">
+                                            <input type="radio" name="exportFormat" value="pdf" checked class="mr-2">
+                                            <i class="fas fa-file-pdf text-red-600 mr-1"></i>PDF
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="radio" name="exportFormat" value="excel" class="mr-2">
+                                            <i class="fas fa-file-excel text-green-600 mr-1"></i>Excel
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="radio" name="exportFormat" value="csv" class="mr-2">
+                                            <i class="fas fa-file-csv text-blue-600 mr-1"></i>CSV
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex space-x-4">
+                                    <button onclick="generateReport()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                                        <i class="fas fa-chart-line mr-2"></i>Générer Rapport
+                                    </button>
+                                    <button onclick="scheduleReport()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
+                                        <i class="fas fa-clock mr-2"></i>Programmer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Aperçu du Rapport -->
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Aperçu</h3>
+                            <div id="reportPreview" class="border border-gray-200 rounded-lg p-4 h-64 bg-gray-50 flex items-center justify-center">
+                                <p class="text-gray-500">Sélectionnez les paramètres et cliquez sur "Générer Rapport"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Calendrier de Maintenance -->
+        <div id="calendarSection" class="hidden">
+            <div class="bg-white rounded-lg shadow-md mb-8">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-xl font-bold text-gray-900">
+                            <i class="fas fa-calendar-alt mr-2 text-green-600"></i>Calendrier de Maintenance Préventive
+                        </h2>
+                        <div class="flex space-x-2">
+                            <button onclick="addMaintenanceEvent()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                                <i class="fas fa-plus mr-2"></i>Ajouter
+                            </button>
+                            <button onclick="generateMaintenancePlan()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                                <i class="fas fa-magic mr-2"></i>Plan IA
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-7 gap-1 mb-4">
+                        <div class="text-center font-semibold text-gray-700 py-2">Lun</div>
+                        <div class="text-center font-semibold text-gray-700 py-2">Mar</div>
+                        <div class="text-center font-semibold text-gray-700 py-2">Mer</div>
+                        <div class="text-center font-semibold text-gray-700 py-2">Jeu</div>
+                        <div class="text-center font-semibold text-gray-700 py-2">Ven</div>
+                        <div class="text-center font-semibold text-gray-700 py-2">Sam</div>
+                        <div class="text-center font-semibold text-gray-700 py-2">Dim</div>
+                    </div>
+                    <div id="calendarGrid" class="grid grid-cols-7 gap-1">
+                        <!-- Calendrier généré dynamiquement -->
+                    </div>
+                    
+                    <!-- Événements du jour sélectionné -->
+                    <div class="mt-6">
+                        <h3 class="text-lg font-semibold mb-4">Événements du <span id="selectedDate">Aujourd'hui</span></h3>
+                        <div id="dayEvents" class="space-y-3">
+                            <div class="maintenance-event bg-blue-50 p-4 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-semibold text-blue-900">Maintenance Chaudière - Bâtiment A</h4>
+                                        <p class="text-blue-700 text-sm">09:00 - 11:00 | Technicien: Jean Dupont</p>
+                                    </div>
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Préventive</span>
+                                </div>
+                            </div>
+                            
+                            <div class="urgent-event bg-red-50 p-4 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-semibold text-red-900">Inspection Électrique - Bâtiment C</h4>
+                                        <p class="text-red-700 text-sm">14:00 - 16:00 | Technicien: Marie Martin</p>
+                                    </div>
+                                    <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">Urgent</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Reconnaissance Vocale -->
+        <div id="voiceSection" class="hidden">
+            <div class="bg-white rounded-lg shadow-md mb-8">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-900">
+                        <i class="fas fa-microphone mr-2 text-purple-600"></i>Reconnaissance Vocale IA
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Interface d'Enregistrement -->
+                        <div class="text-center">
+                            <div class="w-32 h-32 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <i id="micIcon" class="fas fa-microphone text-purple-600 text-4xl"></i>
+                            </div>
+                            <button id="recordButton" onclick="toggleRecording()" class="bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition mb-4">
+                                <i class="fas fa-microphone mr-2"></i>Commencer l'enregistrement
+                            </button>
+                            <p class="text-gray-600 text-sm">Décrivez votre problème à voix haute</p>
+                            
+                            <div id="recordingStatus" class="hidden mt-4">
+                                <div class="flex items-center justify-center text-red-600">
+                                    <div class="w-3 h-3 bg-red-600 rounded-full mr-2 voice-recording"></div>
+                                    <span>Enregistrement en cours...</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">Durée: <span id="recordingTime">00:00</span></p>
+                            </div>
+                        </div>
+                        
+                        <!-- Résultat de la Transcription -->
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Transcription et Analyse</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Texte transcrit</label>
+                                    <textarea id="transcribedText" class="w-full border border-gray-300 rounded-lg px-3 py-2 h-24" placeholder="La transcription apparaîtra ici..."></textarea>
+                                </div>
+                                
+                                <div id="aiAnalysis" class="hidden">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Analyse IA</label>
+                                    <div class="bg-gray-50 rounded-lg p-4">
+                                        <div class="grid grid-cols-2 gap-4 text-sm">
+                                            <div>
+                                                <span class="font-medium">Catégorie:</span>
+                                                <span id="detectedCategory" class="ml-2 text-blue-600">-</span>
+                                            </div>
+                                            <div>
+                                                <span class="font-medium">Priorité:</span>
+                                                <span id="detectedPriority" class="ml-2 text-red-600">-</span>
+                                            </div>
+                                            <div>
+                                                <span class="font-medium">Confiance:</span>
+                                                <span id="detectedConfidence" class="ml-2 text-green-600">-</span>
+                                            </div>
+                                            <div>
+                                                <span class="font-medium">Urgence:</span>
+                                                <span id="detectedUrgency" class="ml-2 text-orange-600">-</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button onclick="createTicketFromVoice()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
+                                    <i class="fas fa-ticket-alt mr-2"></i>Créer Ticket
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Géolocalisation -->
+        <div id="mapsSection" class="hidden">
+            <div class="bg-white rounded-lg shadow-md mb-8">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-900">
+                        <i class="fas fa-map-marker-alt mr-2 text-red-600"></i>Géolocalisation et Cartes
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Carte Interactive -->
+                        <div class="lg:col-span-2">
+                            <div id="mapContainer" class="w-full h-96 bg-gray-200 rounded-lg flex items-center justify-center">
+                                <div class="text-center">
+                                    <i class="fas fa-map text-gray-400 text-4xl mb-4"></i>
+                                    <p class="text-gray-600">Carte interactive (simulation)</p>
+                                    <p class="text-sm text-gray-500">Intégration Google Maps en cours...</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Panneau de Contrôle -->
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Contrôles</h3>
+                            <div class="space-y-4">
+                                <button onclick="locateUser()" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                                    <i class="fas fa-crosshairs mr-2"></i>Ma Position
+                                </button>
+                                
+                                <button onclick="showAllProperties()" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                                    <i class="fas fa-building mr-2"></i>Tous les Biens
+                                </button>
+                                
+                                <button onclick="optimizeRoute()" class="w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+                                    <i class="fas fa-route mr-2"></i>Optimiser Trajet
+                                </button>
+                                
+                                <div class="border-t pt-4">
+                                    <h4 class="font-semibold mb-2">Interventions Aujourd'hui</h4>
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex items-center justify-between">
+                                            <span>Résidence Les Jardins</span>
+                                            <span class="text-blue-600">09:00</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span>Immeuble Central</span>
+                                            <span class="text-green-600">14:00</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span>Villa des Roses</span>
+                                            <span class="text-orange-600">16:30</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Scan Documents -->
+        <div id="scanSection" class="hidden">
+            <div class="bg-white rounded-lg shadow-md mb-8">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-900">
+                        <i class="fas fa-camera mr-2 text-orange-600"></i>Scan Documents et OCR IA
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Zone de Upload -->
+                        <div>
+                            <div id="dropZone" class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-orange-400 transition">
+                                <i class="fas fa-cloud-upload-alt text-gray-400 text-4xl mb-4"></i>
+                                <p class="text-gray-600 mb-2">Glissez vos documents ici ou</p>
+                                <button onclick="document.getElementById('fileInput').click()" class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition">
+                                    Sélectionner Fichiers
+                                </button>
+                                <input type="file" id="fileInput" multiple accept="image/*,.pdf" class="hidden" onchange="handleFileUpload(event)">
+                                <p class="text-xs text-gray-500 mt-2">Formats supportés: JPG, PNG, PDF</p>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <button onclick="startCamera()" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                                    <i class="fas fa-camera mr-2"></i>Prendre une Photo
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Résultats OCR -->
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Résultats OCR</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Texte extrait</label>
+                                    <textarea id="extractedText" class="w-full border border-gray-300 rounded-lg px-3 py-2 h-32" placeholder="Le texte extrait apparaîtra ici..."></textarea>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Informations détectées</label>
+                                    <div id="detectedInfo" class="bg-gray-50 rounded-lg p-4 text-sm">
+                                        <p class="text-gray-500">Aucun document analysé</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex space-x-2">
+                                    <button onclick="processWithAI()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+                                        <i class="fas fa-brain mr-2"></i>Analyser IA
+                                    </button>
+                                    <button onclick="createTicketFromScan()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                                        <i class="fas fa-ticket-alt mr-2"></i>Créer Ticket
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Workflow -->
+        <div id="workflowSection" class="hidden">
+            <div class="bg-white rounded-lg shadow-md mb-8">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-900">
+                        <i class="fas fa-sitemap mr-2 text-indigo-600"></i>Workflow d'Approbation
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Designer de Workflow -->
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Designer de Workflow</h3>
+                            <div class="border border-gray-200 rounded-lg p-4 h-64 bg-gray-50">
+                                <div class="flex items-center justify-center h-full">
+                                    <div class="text-center">
+                                        <i class="fas fa-project-diagram text-gray-400 text-3xl mb-2"></i>
+                                        <p class="text-gray-600">Interface de design de workflow</p>
+                                        <p class="text-sm text-gray-500">Glissez-déposez les étapes</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 flex space-x-2">
+                                <button onclick="createWorkflow()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+                                    <i class="fas fa-plus mr-2"></i>Nouveau
+                                </button>
+                                <button onclick="saveWorkflow()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                                    <i class="fas fa-save mr-2"></i>Sauvegarder
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Workflows Actifs -->
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Workflows Actifs</h3>
+                            <div class="space-y-3">
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="font-semibold">Approbation Maintenance > 500€</h4>
+                                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Actif</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-2">Technicien → Superviseur → Manager</p>
+                                    <div class="flex items-center text-xs text-gray-500">
+                                        <span>3 étapes</span>
+                                        <span class="mx-2">•</span>
+                                        <span>12 tickets en cours</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="font-semibold">Validation Urgence</h4>
+                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Actif</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-2">IA → Superviseur (si priorité 5)</p>
+                                    <div class="flex items-center text-xs text-gray-500">
+                                        <span>2 étapes</span>
+                                        <span class="mx-2">•</span>
+                                        <span>3 tickets en cours</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="font-semibold">Satisfaction Client</h4>
+                                        <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Test</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-2">Résolution → Enquête → Suivi</p>
+                                    <div class="flex items-center text-xs text-gray-500">
+                                        <span>3 étapes</span>
+                                        <span class="mx-2">•</span>
+                                        <span>En test</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Modal de Succès -->
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div class="text-center">
+                <i class="fas fa-check-circle text-green-600 text-4xl mb-4"></i>
+                <h3 class="text-lg font-semibold mb-2">Succès !</h3>
+                <p id="successMessage" class="text-gray-600 mb-4">Opération réalisée avec succès</p>
+                <button onclick="closeModal('successModal')" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentSection = null;
+        let isRecording = false;
+        let recordingTimer = null;
+        let recordingSeconds = 0;
+
+        // Navigation entre sections
+        function showSection(sectionId) {
+            // Masquer toutes les sections
+            const sections = ['reportsSection', 'calendarSection', 'voiceSection', 'mapsSection', 'scanSection', 'workflowSection'];
+            sections.forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            
+            // Afficher la section demandée
+            document.getElementById(sectionId).classList.remove('hidden');
+            currentSection = sectionId;
+        }
+
+        function showReports() { showSection('reportsSection'); }
+        function showCalendar() { showSection('calendarSection'); generateCalendar(); }
+        function showVoice() { showSection('voiceSection'); }
+        function showMaps() { showSection('mapsSection'); }
+        function showScan() { showSection('scanSection'); }
+        function showWorkflow() { showSection('workflowSection'); }
+
+        // Générateur de Rapports
+        function generateReport() {
+            const type = document.getElementById('reportType').value;
+            const period = document.getElementById('reportPeriod').value;
+            const format = document.querySelector('input[name="exportFormat"]:checked').value;
+            
+            // Simulation de génération
+            const preview = document.getElementById('reportPreview');
+            preview.innerHTML = `
+                <div class="text-left">
+                    <h4 class="font-semibold mb-2">Aperçu du Rapport</h4>
+                    <p class="text-sm text-gray-600 mb-2">Type: ${type}</p>
+                    <p class="text-sm text-gray-600 mb-2">Période: ${period}</p>
+                    <p class="text-sm text-gray-600 mb-4">Format: ${format.toUpperCase()}</p>
+                    <div class="bg-blue-50 p-3 rounded">
+                        <p class="text-xs text-blue-800">✓ Données collectées: 1,247 entrées</p>
+                        <p class="text-xs text-blue-800">✓ Graphiques: 5 visualisations</p>
+                        <p class="text-xs text-blue-800">✓ Prêt pour export</p>
+                    </div>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                showSuccess(`Rapport ${type} généré avec succès ! Export ${format.toUpperCase()} disponible.`);
+            }, 1500);
+        }
+
+        function scheduleReport() {
+            showSuccess('Rapport programmé pour génération automatique hebdomadaire.');
+        }
+
+        // Calendrier de Maintenance
+        function generateCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            
+            grid.innerHTML = '';
+            
+            // Jours du mois précédent
+            for (let i = firstDay.getDay() - 1; i >= 0; i--) {
+                const day = new Date(firstDay.getTime() - (i + 1) * 24 * 60 * 60 * 1000);
+                const dayElement = createDayElement(day, true);
+                grid.appendChild(dayElement);
+            }
+            
+            // Jours du mois actuel
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const date = new Date(today.getFullYear(), today.getMonth(), day);
+                const dayElement = createDayElement(date, false);
+                grid.appendChild(dayElement);
+            }
+            
+            // Jours du mois suivant
+            const remainingCells = 42 - grid.children.length;
+            for (let day = 1; day <= remainingCells; day++) {
+                const date = new Date(today.getFullYear(), today.getMonth() + 1, day);
+                const dayElement = createDayElement(date, true);
+                grid.appendChild(dayElement);
+            }
+        }
+
+        function createDayElement(date, isOtherMonth) {
+            const div = document.createElement('div');
+            div.className = `calendar-day p-2 text-center cursor-pointer rounded ${isOtherMonth ? 'text-gray-400' : 'text-gray-900 hover:bg-blue-50'}`;
+            div.textContent = date.getDate();
+            
+            // Ajouter des événements simulés
+            if (!isOtherMonth && Math.random() > 0.7) {
+                const dot = document.createElement('div');
+                dot.className = 'w-2 h-2 bg-blue-600 rounded-full mx-auto mt-1';
+                div.appendChild(dot);
+            }
+            
+            div.onclick = () => selectDate(date);
+            return div;
+        }
+
+        function selectDate(date) {
+            document.getElementById('selectedDate').textContent = date.toLocaleDateString('fr-FR');
+        }
+
+        function addMaintenanceEvent() {
+            showSuccess('Nouvel événement de maintenance ajouté au calendrier.');
+        }
+
+        function generateMaintenancePlan() {
+            showSuccess('Plan de maintenance préventive généré par IA pour les 3 prochains mois.');
+        }
+
+        // Reconnaissance Vocale
+        function toggleRecording() {
+            if (!isRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+
+        function startRecording() {
+            isRecording = true;
+            recordingSeconds = 0;
+            
+            document.getElementById('recordButton').innerHTML = '<i class="fas fa-stop mr-2"></i>Arrêter l\'enregistrement';
+            document.getElementById('recordButton').className = 'bg-red-600 text-white px-8 py-3 rounded-lg hover:bg-red-700 transition mb-4';
+            document.getElementById('micIcon').className = 'fas fa-microphone text-red-600 text-4xl voice-recording';
+            document.getElementById('recordingStatus').classList.remove('hidden');
+            
+            // Simulation d'enregistrement
+            recordingTimer = setInterval(() => {
+                recordingSeconds++;
+                const minutes = Math.floor(recordingSeconds / 60);
+                const seconds = recordingSeconds % 60;
+                document.getElementById('recordingTime').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function stopRecording() {
+            isRecording = false;
+            clearInterval(recordingTimer);
+            
+            document.getElementById('recordButton').innerHTML = '<i class="fas fa-microphone mr-2"></i>Commencer l\'enregistrement';
+            document.getElementById('recordButton').className = 'bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition mb-4';
+            document.getElementById('micIcon').className = 'fas fa-microphone text-purple-600 text-4xl';
+            document.getElementById('recordingStatus').classList.add('hidden');
+            
+            // Simulation de transcription
+            setTimeout(() => {
+                const transcription = "Il y a une fuite d'eau importante sous l'évier de la cuisine, l'eau coule beaucoup et ça commence à inonder le sol. C'est urgent, il faut intervenir rapidement.";
+                document.getElementById('transcribedText').value = transcription;
+                
+                // Analyse IA simulée
+                document.getElementById('aiAnalysis').classList.remove('hidden');
+                document.getElementById('detectedCategory').textContent = 'Plomberie';
+                document.getElementById('detectedPriority').textContent = '5/5 (Critique)';
+                document.getElementById('detectedConfidence').textContent = '94%';
+                document.getElementById('detectedUrgency').textContent = 'Immédiate';
+            }, 2000);
+        }
+
+        function createTicketFromVoice() {
+            showSuccess('Ticket créé automatiquement à partir de la reconnaissance vocale !');
+        }
+
+        // Géolocalisation
+        function locateUser() {
+            showSuccess('Position utilisateur localisée avec succès.');
+        }
+
+        function showAllProperties() {
+            showSuccess('Affichage de tous les biens immobiliers sur la carte.');
+        }
+
+        function optimizeRoute() {
+            showSuccess('Trajet optimisé calculé : 3 interventions, 45 minutes de trajet total.');
+        }
+
+        // Scan Documents
+        function handleFileUpload(event) {
+            const files = event.target.files;
+            if (files.length > 0) {
+                // Simulation OCR
+                setTimeout(() => {
+                    document.getElementById('extractedText').value = 
+                        "DEMANDE D'INTERVENTION\nDate: 15/01/2024\nAppartement: A101\nProblème: Fuite robinet cuisine\nUrgence: Élevée\nContact: Marie Dupont - 06.12.34.56.78";
+                    
+                    document.getElementById('detectedInfo').innerHTML = `
+                        <div class="space-y-2">
+                            <p><strong>Type:</strong> Demande d'intervention</p>
+                            <p><strong>Appartement:</strong> A101</p>
+                            <p><strong>Catégorie:</strong> Plomberie</p>
+                            <p><strong>Priorité:</strong> Élevée</p>
+                            <p><strong>Contact:</strong> Marie Dupont</p>
+                        </div>
+                    `;
+                }, 1500);
+            }
+        }
+
+        function startCamera() {
+            showSuccess('Caméra activée. Prenez une photo du document à analyser.');
+        }
+
+        function processWithAI() {
+            showSuccess('Document analysé par IA. Informations extraites et structurées.');
+        }
+
+        function createTicketFromScan() {
+            showSuccess('Ticket créé automatiquement à partir du document scanné !');
+        }
+
+        // Workflow
+        function createWorkflow() {
+            showSuccess('Nouveau workflow créé. Configurez les étapes d\'approbation.');
+        }
+
+        function saveWorkflow() {
+            showSuccess('Workflow sauvegardé et activé avec succès.');
+        }
+
+        // Utilitaires
+        function showSuccess(message) {
+            document.getElementById('successMessage').textContent = message;
+            document.getElementById('successModal').classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialisation par défaut
+        });
+    </script>
+</body>
+</html>
+

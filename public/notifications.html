@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centre de Notifications - Système Immobilier</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .notification-card { transition: all 0.3s ease; }
+        .notification-card:hover { transform: translateY(-2px); }
+        .status-indicator { animation: pulse 2s infinite; }
+        .integration-card { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .monitoring-card { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .mobile-first { max-width: 1200px; margin: 0 auto; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="gradient-bg shadow-lg">
+        <div class="mobile-first px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <button onclick="window.location.href='/'" class="text-white mr-4">
+                        <i class="fas fa-arrow-left text-lg"></i>
+                    </button>
+                    <i class="fas fa-bell text-white text-xl mr-3"></i>
+                    <h1 class="text-white text-lg font-bold">Centre de Notifications</h1>
+                </div>
+                <div class="flex items-center">
+                    <div class="w-2 h-2 bg-green-400 rounded-full mr-2 status-indicator"></div>
+                    <span class="text-white text-sm">Système Actif</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu Principal -->
+    <div class="mobile-first px-4 py-6">
+        <!-- Vue d'ensemble -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-envelope text-blue-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900" id="emailCount">127</h3>
+                        <p class="text-gray-600 text-sm">Emails envoyés</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-sms text-green-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900" id="smsCount">43</h3>
+                        <p class="text-gray-600 text-sm">SMS envoyés</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-mobile-alt text-purple-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900" id="pushCount">89</h3>
+                        <p class="text-gray-600 text-sm">Push notifications</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-link text-orange-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900" id="webhookCount">24</h3>
+                        <p class="text-gray-600 text-sm">Webhooks traités</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions Rapides -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Envoi de Notification -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-paper-plane mr-2 text-blue-600"></i>Envoyer Notification
+                </h3>
+                <div class="space-y-4">
+                    <select id="notificationType" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                        <option value="email">📧 Email</option>
+                        <option value="sms">📱 SMS</option>
+                        <option value="push">🔔 Push</option>
+                        <option value="webhook">🔗 Webhook</option>
+                    </select>
+                    <input type="text" id="recipient" placeholder="Destinataire" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                    <textarea id="message" placeholder="Message..." class="w-full border border-gray-300 rounded-lg px-3 py-2 h-20"></textarea>
+                    <select id="priority" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                        <option value="normal">Normale</option>
+                        <option value="urgent">Urgente</option>
+                        <option value="critical">Critique</option>
+                    </select>
+                    <button onclick="sendNotification()" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                        Envoyer
+                    </button>
+                </div>
+            </div>
+
+            <!-- Intégration Garaio -->
+            <div class="integration-card rounded-lg shadow-md p-6 text-white">
+                <h3 class="text-lg font-semibold mb-4">
+                    <i class="fas fa-sync mr-2"></i>Intégration Garaio REM
+                </h3>
+                <div class="space-y-3">
+                    <div class="bg-white/20 rounded-lg p-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm">Dernière sync</span>
+                            <span class="text-sm font-medium">Il y a 10 min</span>
+                        </div>
+                    </div>
+                    <div class="bg-white/20 rounded-lg p-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm">Statut</span>
+                            <span class="text-sm font-medium">✅ Connecté</span>
+                        </div>
+                    </div>
+                    <button onclick="syncGaraio()" class="w-full bg-white/20 hover:bg-white/30 text-white py-2 rounded-lg transition">
+                        Synchroniser maintenant
+                    </button>
+                </div>
+            </div>
+
+            <!-- Monitoring Système -->
+            <div class="monitoring-card rounded-lg shadow-md p-6 text-white">
+                <h3 class="text-lg font-semibold mb-4">
+                    <i class="fas fa-chart-line mr-2"></i>Monitoring Système
+                </h3>
+                <div class="space-y-3">
+                    <div class="bg-white/20 rounded-lg p-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm">Uptime</span>
+                            <span class="text-sm font-medium">99.9%</span>
+                        </div>
+                    </div>
+                    <div class="bg-white/20 rounded-lg p-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm">Performance</span>
+                            <span class="text-sm font-medium">Excellent</span>
+                        </div>
+                    </div>
+                    <button onclick="checkHealth()" class="w-full bg-white/20 hover:bg-white/30 text-white py-2 rounded-lg transition">
+                        Vérifier santé
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historique des Notifications -->
+        <div class="bg-white rounded-lg shadow-md mb-8">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-history mr-2 text-gray-600"></i>Historique des Notifications
+                    </h3>
+                    <button onclick="refreshNotifications()" class="text-blue-600 hover:text-blue-700">
+                        <i class="fas fa-refresh mr-1"></i>Actualiser
+                    </button>
+                </div>
+            </div>
+            <div id="notificationHistory" class="p-6">
+                <!-- Les notifications seront chargées ici -->
+            </div>
+        </div>
+
+        <!-- Rapports et Analytics -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Rapport de Performance -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-chart-bar mr-2 text-green-600"></i>Rapport de Performance
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Taux de livraison</span>
+                        <span class="font-semibold text-green-600">97.8%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Temps de réponse moyen</span>
+                        <span class="font-semibold text-blue-600">250ms</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Notifications échouées</span>
+                        <span class="font-semibold text-red-600">2.2%</span>
+                    </div>
+                    <button onclick="generateReport('performance')" class="w-full bg-green-100 text-green-800 py-2 rounded-lg hover:bg-green-200 transition">
+                        Générer rapport détaillé
+                    </button>
+                </div>
+            </div>
+
+            <!-- Intégrations Actives -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-plug mr-2 text-purple-600"></i>Intégrations Actives
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-building text-blue-600 text-sm"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium">Garaio REM</div>
+                                <div class="text-sm text-gray-600">ERP Immobilier</div>
+                            </div>
+                        </div>
+                        <span class="text-green-600 text-sm">✅ Actif</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-envelope text-green-600 text-sm"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium">SendGrid</div>
+                                <div class="text-sm text-gray-600">Service Email</div>
+                            </div>
+                        </div>
+                        <span class="text-green-600 text-sm">✅ Actif</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-sms text-orange-600 text-sm"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium">Twilio</div>
+                                <div class="text-sm text-gray-600">Service SMS</div>
+                            </div>
+                        </div>
+                        <span class="text-green-600 text-sm">✅ Actif</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Résultats -->
+    <div id="resultModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold" id="modalTitle">Résultat</h3>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="modalContent" class="mb-4">
+                <!-- Contenu dynamique -->
+            </div>
+            <button onclick="closeModal()" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                Fermer
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let notificationHistory = [];
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            loadNotificationHistory();
+            updateCounters();
+        });
+
+        // Envoi de notification
+        async function sendNotification() {
+            const type = document.getElementById('notificationType').value;
+            const recipient = document.getElementById('recipient').value;
+            const message = document.getElementById('message').value;
+            const priority = document.getElementById('priority').value;
+
+            if (!recipient || !message) {
+                showModal('Erreur', 'Veuillez remplir tous les champs obligatoires.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/notifications/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        type: type,
+                        recipient: recipient,
+                        message: message,
+                        priority: priority,
+                        ticketId: Math.floor(Math.random() * 1000)
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showModal('Succès', `Notification ${type} envoyée avec succès !<br><br><strong>ID:</strong> ${result.notification.id}<br><strong>Statut:</strong> ${result.notification.status}<br><strong>Détails:</strong> ${JSON.stringify(result.notification.details, null, 2)}`);
+                    
+                    // Réinitialiser le formulaire
+                    document.getElementById('recipient').value = '';
+                    document.getElementById('message').value = '';
+                    
+                    // Actualiser l'historique
+                    loadNotificationHistory();
+                    updateCounters();
+                } else {
+                    showModal('Erreur', result.error);
+                }
+            } catch (error) {
+                showModal('Erreur', 'Erreur de connexion au serveur.');
+            }
+        }
+
+        // Synchronisation Garaio
+        async function syncGaraio() {
+            try {
+                const response = await fetch('/api/integrations/garaio/sync', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'export_tickets',
+                        data: { includeResolved: false }
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showModal('Synchronisation Garaio', `Synchronisation lancée avec succès !<br><br><strong>ID:</strong> ${result.result.syncId}<br><strong>Action:</strong> ${result.result.action}<br><strong>Statut:</strong> ${result.result.status}<br><strong>Endpoint:</strong> ${result.result.details.endpoint}`);
+                } else {
+                    showModal('Erreur', result.error);
+                }
+            } catch (error) {
+                showModal('Erreur', 'Erreur de connexion au serveur.');
+            }
+        }
+
+        // Vérification de santé
+        async function checkHealth() {
+            try {
+                const response = await fetch('/api/monitoring/health');
+                const result = await response.json();
+
+                if (result.success) {
+                    const health = result.health;
+                    let healthHtml = `<strong>Statut:</strong> ${health.status}<br><strong>Uptime:</strong> ${health.uptime}<br><br><strong>Services:</strong><br>`;
+                    
+                    for (const [service, data] of Object.entries(health.services)) {
+                        healthHtml += `• ${service}: ${data.status} (${data.responseTime || 'N/A'})<br>`;
+                    }
+                    
+                    healthHtml += `<br><strong>Métriques:</strong><br>`;
+                    healthHtml += `• CPU: ${health.metrics.cpu_usage}<br>`;
+                    healthHtml += `• Mémoire: ${health.metrics.memory_usage}<br>`;
+                    healthHtml += `• Disque: ${health.metrics.disk_usage}`;
+
+                    showModal('Santé du Système', healthHtml);
+                } else {
+                    showModal('Erreur', 'Impossible de récupérer les informations de santé.');
+                }
+            } catch (error) {
+                showModal('Erreur', 'Erreur de connexion au serveur.');
+            }
+        }
+
+        // Génération de rapport
+        async function generateReport(type) {
+            try {
+                const response = await fetch(`/api/reports/generate/${type}?period=7d`);
+                const result = await response.json();
+
+                if (result.success) {
+                    const report = result.report;
+                    let reportHtml = `<strong>Rapport ${type}</strong><br><strong>Période:</strong> ${report.period}<br><br>`;
+                    
+                    for (const [key, value] of Object.entries(report.data)) {
+                        if (typeof value === 'object') {
+                            reportHtml += `<strong>${key}:</strong><br>`;
+                            for (const [subKey, subValue] of Object.entries(value)) {
+                                reportHtml += `• ${subKey}: ${subValue}<br>`;
+                            }
+                        } else {
+                            reportHtml += `<strong>${key}:</strong> ${value}<br>`;
+                        }
+                    }
+
+                    showModal('Rapport Généré', reportHtml);
+                } else {
+                    showModal('Erreur', result.error);
+                }
+            } catch (error) {
+                showModal('Erreur', 'Erreur de connexion au serveur.');
+            }
+        }
+
+        // Chargement de l'historique
+        function loadNotificationHistory() {
+            const historyContainer = document.getElementById('notificationHistory');
+            
+            // Simulation d'historique
+            const mockHistory = [
+                {
+                    id: 1001,
+                    type: 'email',
+                    recipient: 'marie.dupont@email.com',
+                    message: 'Votre demande #1247 a été assignée au technicien Jean Dupont',
+                    status: 'delivered',
+                    sentAt: new Date(Date.now() - 15*60*1000).toISOString(),
+                    priority: 'normal'
+                },
+                {
+                    id: 1002,
+                    type: 'sms',
+                    recipient: '+33612345678',
+                    message: 'URGENT: Intervention programmée aujourd\'hui 16h00',
+                    status: 'delivered',
+                    sentAt: new Date(Date.now() - 45*60*1000).toISOString(),
+                    priority: 'urgent'
+                },
+                {
+                    id: 1003,
+                    type: 'push',
+                    recipient: 'user_123',
+                    message: 'Nouvelle demande créée avec succès',
+                    status: 'delivered',
+                    sentAt: new Date(Date.now() - 2*60*60*1000).toISOString(),
+                    priority: 'normal'
+                }
+            ];
+
+            let historyHtml = '';
+            mockHistory.forEach(notification => {
+                const timeAgo = getTimeAgo(new Date(notification.sentAt));
+                const typeIcon = getTypeIcon(notification.type);
+                const statusColor = notification.status === 'delivered' ? 'text-green-600' : 'text-yellow-600';
+                const priorityBadge = notification.priority === 'urgent' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800';
+
+                historyHtml += `
+                    <div class="notification-card border border-gray-200 rounded-lg p-4 mb-3">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
+                                    ${typeIcon}
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center mb-1">
+                                        <span class="font-medium text-gray-900">#${notification.id}</span>
+                                        <span class="ml-2 px-2 py-1 text-xs rounded-full ${priorityBadge}">${notification.priority}</span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm mb-1">${notification.message}</p>
+                                    <p class="text-gray-500 text-xs">À: ${notification.recipient}</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs ${statusColor} font-medium">${notification.status}</div>
+                                <div class="text-xs text-gray-500">${timeAgo}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            historyContainer.innerHTML = historyHtml;
+        }
+
+        // Mise à jour des compteurs
+        function updateCounters() {
+            document.getElementById('emailCount').textContent = Math.floor(Math.random() * 50) + 100;
+            document.getElementById('smsCount').textContent = Math.floor(Math.random() * 20) + 30;
+            document.getElementById('pushCount').textContent = Math.floor(Math.random() * 30) + 70;
+            document.getElementById('webhookCount').textContent = Math.floor(Math.random() * 10) + 20;
+        }
+
+        // Actualisation des notifications
+        function refreshNotifications() {
+            loadNotificationHistory();
+            updateCounters();
+            showModal('Actualisation', 'Historique des notifications mis à jour !');
+        }
+
+        // Utilitaires
+        function getTypeIcon(type) {
+            const icons = {
+                email: '<i class="fas fa-envelope text-blue-600"></i>',
+                sms: '<i class="fas fa-sms text-green-600"></i>',
+                push: '<i class="fas fa-mobile-alt text-purple-600"></i>',
+                webhook: '<i class="fas fa-link text-orange-600"></i>'
+            };
+            return icons[type] || '<i class="fas fa-bell text-gray-600"></i>';
+        }
+
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            
+            if (diffMins < 1) return 'À l\'instant';
+            if (diffMins < 60) return `Il y a ${diffMins} min`;
+            
+            const diffHours = Math.floor(diffMins / 60);
+            if (diffHours < 24) return `Il y a ${diffHours}h`;
+            
+            const diffDays = Math.floor(diffHours / 24);
+            return `Il y a ${diffDays}j`;
+        }
+
+        // Modal
+        function showModal(title, content) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('resultModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('resultModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
+

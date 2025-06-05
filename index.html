@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Système de Gestion Tickets - Administration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .status-nouveau { background: #fef3c7; color: #92400e; }
+        .status-en_cours { background: #dbeafe; color: #1e40af; }
+        .status-resolu { background: #d1fae5; color: #065f46; }
+        .priority-1 { border-left: 4px solid #10b981; }
+        .priority-2 { border-left: 4px solid #3b82f6; }
+        .priority-3 { border-left: 4px solid #f59e0b; }
+        .priority-4 { border-left: 4px solid #ef4444; }
+        .priority-5 { border-left: 4px solid #dc2626; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="gradient-bg shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-home text-white text-2xl mr-3"></i>
+                    <h1 class="text-white text-xl font-bold">Gestion Tickets Immobiliers</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="showCreateTicket()" class="bg-white text-purple-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition">
+                        <i class="fas fa-plus mr-2"></i>Nouveau Ticket
+                    </button>
+                    <button onclick="testAI()" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition">
+                        <i class="fas fa-robot mr-2"></i>Test IA
+                    </button>
+                    <div class="text-white">
+                        <i class="fas fa-user-circle mr-2"></i>
+                        <span id="userName">Administrateur</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Stats -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow card-hover p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                        <i class="fas fa-ticket-alt text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total Tickets</p>
+                        <p class="text-2xl font-bold text-gray-900" id="totalTickets">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow card-hover p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                        <i class="fas fa-clock text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">En Attente</p>
+                        <p class="text-2xl font-bold text-gray-900" id="pendingTickets">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow card-hover p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-green-100 text-green-600">
+                        <i class="fas fa-check-circle text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Résolus</p>
+                        <p class="text-2xl font-bold text-gray-900" id="resolvedTickets">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow card-hover p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                        <i class="fas fa-robot text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">IA Confiance</p>
+                        <p class="text-2xl font-bold text-gray-900" id="aiConfidence">0%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtres -->
+        <div class="bg-white rounded-lg shadow mb-6 p-6">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Statut</label>
+                    <select id="filterStatus" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                        <option value="">Tous les statuts</option>
+                        <option value="nouveau">Nouveau</option>
+                        <option value="en_cours">En cours</option>
+                        <option value="resolu">Résolu</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Catégorie</label>
+                    <select id="filterCategory" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                        <option value="">Toutes les catégories</option>
+                        <option value="Plomberie">Plomberie</option>
+                        <option value="Électricité">Électricité</option>
+                        <option value="Chauffage">Chauffage</option>
+                        <option value="Serrurerie">Serrurerie</option>
+                        <option value="Peinture">Peinture</option>
+                        <option value="Ménage">Ménage</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Priorité</label>
+                    <select id="filterPriority" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                        <option value="">Toutes les priorités</option>
+                        <option value="1">1 - Très faible</option>
+                        <option value="2">2 - Faible</option>
+                        <option value="3">3 - Moyenne</option>
+                        <option value="4">4 - Élevée</option>
+                        <option value="5">5 - Critique</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Recherche</label>
+                    <input type="text" id="searchInput" placeholder="Rechercher..." 
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                </div>
+                <div class="flex items-end">
+                    <button onclick="applyFilters()" 
+                            class="w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+                        <i class="fas fa-search mr-2"></i>Filtrer
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste des tickets -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900">
+                    <i class="fas fa-list mr-2"></i>Liste des Tickets
+                </h2>
+            </div>
+            <div id="ticketsList" class="divide-y divide-gray-200">
+                <!-- Les tickets seront chargés ici -->
+            </div>
+            
+            <!-- Pagination -->
+            <div id="pagination" class="px-6 py-4 border-t border-gray-200">
+                <!-- Pagination sera générée ici -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Création Ticket -->
+    <div id="createTicketModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Nouveau Ticket</h3>
+                </div>
+                <form id="createTicketForm" class="p-6">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Titre</label>
+                        <input type="text" id="ticketTitle" required
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea id="ticketDescription" rows="4" required
+                                  class="w-full border border-gray-300 rounded-lg px-3 py-2"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Appartement</label>
+                        <input type="text" id="apartmentNumber" placeholder="ex: A101"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                    </div>
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" onclick="hideCreateTicket()"
+                                class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+                            Annuler
+                        </button>
+                        <button type="submit"
+                                class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                            Créer avec IA
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Test IA -->
+    <div id="testAIModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-robot mr-2"></i>Test de Classification IA
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description du problème</label>
+                        <textarea id="aiTestDescription" rows="4" placeholder="Décrivez le problème..."
+                                  class="w-full border border-gray-300 rounded-lg px-3 py-2"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <button onclick="runAITest()" 
+                                class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+                            <i class="fas fa-magic mr-2"></i>Analyser avec IA
+                        </button>
+                    </div>
+                    <div id="aiTestResult" class="hidden">
+                        <!-- Résultats IA -->
+                    </div>
+                    <div class="flex justify-end mt-6">
+                        <button onclick="hideTestAI()"
+                                class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+                            Fermer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentPage = 1;
+        let tickets = [];
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTickets();
+            loadStats();
+            
+            // Event listeners pour les filtres
+            document.getElementById('searchInput').addEventListener('input', debounce(applyFilters, 300));
+        });
+
+        // Fonction debounce pour la recherche
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Charger les statistiques
+        async function loadStats() {
+            try {
+                // Simulation des stats pour la démo
+                document.getElementById('totalTickets').textContent = '42';
+                document.getElementById('pendingTickets').textContent = '8';
+                document.getElementById('resolvedTickets').textContent = '34';
+                document.getElementById('aiConfidence').textContent = '94%';
+            } catch (error) {
+                console.error('Erreur lors du chargement des stats:', error);
+            }
+        }
+
+        // Charger les tickets
+        async function loadTickets(page = 1) {
+            try {
+                // Simulation de tickets pour la démo
+                const mockTickets = [
+                    {
+                        id: 1,
+                        title: 'Fuite d\'eau dans la salle de bain',
+                        description: 'Il y a une fuite sous l\'évier de la salle de bain',
+                        category: 'Plomberie',
+                        priority: 4,
+                        status: 'nouveau',
+                        user_name: 'Marie Dupont',
+                        apartment_number: 'A101',
+                        created_at: '2024-01-15T10:30:00Z',
+                        ai_confidence: 0.95
+                    },
+                    {
+                        id: 2,
+                        title: 'Prise électrique ne fonctionne plus',
+                        description: 'La prise de la cuisine ne fonctionne plus depuis hier',
+                        category: 'Électricité',
+                        priority: 3,
+                        status: 'en_cours',
+                        user_name: 'Jean Martin',
+                        apartment_number: 'B205',
+                        created_at: '2024-01-14T14:20:00Z',
+                        ai_confidence: 0.88
+                    },
+                    {
+                        id: 3,
+                        title: 'Radiateur ne chauffe pas',
+                        description: 'Le radiateur du salon reste froid malgré le chauffage allumé',
+                        category: 'Chauffage',
+                        priority: 4,
+                        status: 'nouveau',
+                        user_name: 'Sophie Leroy',
+                        apartment_number: 'C302',
+                        created_at: '2024-01-13T09:15:00Z',
+                        ai_confidence: 0.92
+                    }
+                ];
+
+                displayTickets(mockTickets);
+                currentPage = page;
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement des tickets:', error);
+                showNotification('Erreur lors du chargement des tickets', 'error');
+            }
+        }
+
+        // Afficher les tickets
+        function displayTickets(ticketList) {
+            const container = document.getElementById('ticketsList');
+            
+            if (ticketList.length === 0) {
+                container.innerHTML = `
+                    <div class="p-8 text-center text-gray-500">
+                        <i class="fas fa-inbox text-4xl mb-4"></i>
+                        <p>Aucun ticket trouvé</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = ticketList.map(ticket => `
+                <div class="p-6 hover:bg-gray-50 priority-${ticket.priority}">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <h3 class="text-lg font-semibold text-gray-900">${ticket.title}</h3>
+                                <span class="status-${ticket.status} px-2 py-1 rounded-full text-xs font-medium">
+                                    ${getStatusLabel(ticket.status)}
+                                </span>
+                                <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs">
+                                    ${ticket.category}
+                                </span>
+                            </div>
+                            <p class="text-gray-600 mb-2">${ticket.description}</p>
+                            <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                <span><i class="fas fa-user mr-1"></i>${ticket.user_name}</span>
+                                <span><i class="fas fa-home mr-1"></i>${ticket.apartment_number}</span>
+                                <span><i class="fas fa-clock mr-1"></i>${formatDate(ticket.created_at)}</span>
+                                <span><i class="fas fa-robot mr-1"></i>IA: ${Math.round(ticket.ai_confidence * 100)}%</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="text-right">
+                                <div class="text-sm font-medium text-gray-900">
+                                    Priorité ${ticket.priority}/5
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    ${getPriorityLabel(ticket.priority)}
+                                </div>
+                            </div>
+                            <button onclick="viewTicket(${ticket.id})" 
+                                    class="bg-purple-100 text-purple-600 p-2 rounded-lg hover:bg-purple-200">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Fonctions utilitaires
+        function getStatusLabel(status) {
+            const labels = {
+                'nouveau': 'Nouveau',
+                'en_cours': 'En cours',
+                'resolu': 'Résolu'
+            };
+            return labels[status] || status;
+        }
+
+        function getPriorityLabel(priority) {
+            const labels = {
+                1: 'Très faible',
+                2: 'Faible', 
+                3: 'Moyenne',
+                4: 'Élevée',
+                5: 'Critique'
+            };
+            return labels[priority] || 'Inconnue';
+        }
+
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('fr-FR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Gestion des modals
+        function showCreateTicket() {
+            document.getElementById('createTicketModal').classList.remove('hidden');
+        }
+
+        function hideCreateTicket() {
+            document.getElementById('createTicketModal').classList.add('hidden');
+            document.getElementById('createTicketForm').reset();
+        }
+
+        function testAI() {
+            document.getElementById('testAIModal').classList.remove('hidden');
+        }
+
+        function hideTestAI() {
+            document.getElementById('testAIModal').classList.add('hidden');
+            document.getElementById('aiTestDescription').value = '';
+            document.getElementById('aiTestResult').classList.add('hidden');
+        }
+
+        // Test IA
+        async function runAITest() {
+            const description = document.getElementById('aiTestDescription').value;
+            
+            if (!description.trim()) {
+                showNotification('Veuillez entrer une description', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/ai/classify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text: description })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayAIResult(result.data);
+                } else {
+                    showNotification('Erreur lors de l\'analyse IA', 'error');
+                }
+            } catch (error) {
+                console.error('Erreur test IA:', error);
+                showNotification('Erreur de connexion', 'error');
+            }
+        }
+
+        function displayAIResult(classification) {
+            const resultDiv = document.getElementById('aiTestResult');
+            
+            resultDiv.innerHTML = `
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-gray-900 mb-3">Résultat de l'analyse IA</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <span class="text-sm text-gray-600">Catégorie:</span>
+                            <div class="font-medium">${classification.category}</div>
+                        </div>
+                        <div>
+                            <span class="text-sm text-gray-600">Priorité:</span>
+                            <div class="font-medium">${classification.priority}/5</div>
+                        </div>
+                        <div>
+                            <span class="text-sm text-gray-600">Urgence:</span>
+                            <div class="font-medium">${classification.urgency}</div>
+                        </div>
+                        <div>
+                            <span class="text-sm text-gray-600">Temps estimé:</span>
+                            <div class="font-medium">${classification.estimatedTime}</div>
+                        </div>
+                        <div class="col-span-2">
+                            <span class="text-sm text-gray-600">Spécialiste:</span>
+                            <div class="font-medium">${classification.specialist}</div>
+                        </div>
+                        <div class="col-span-2">
+                            <span class="text-sm text-gray-600">Confiance:</span>
+                            <div class="font-medium">${Math.round(classification.confidence * 100)}%</div>
+                        </div>
+                    </div>
+                    ${classification.recommendations ? `
+                        <div class="mt-4 p-3 bg-blue-50 rounded border-l-4 border-blue-400">
+                            <p class="text-sm text-blue-700">${classification.recommendations}</p>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            resultDiv.classList.remove('hidden');
+        }
+
+        // Création de ticket avec IA
+        document.getElementById('createTicketForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('ticketTitle').value;
+            const description = document.getElementById('ticketDescription').value;
+            const apartmentNumber = document.getElementById('apartmentNumber').value;
+
+            try {
+                // D'abord classifier avec l'IA
+                const aiResponse = await fetch('/api/ai/classify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text: description + ' ' + title })
+                });
+
+                const aiResult = await aiResponse.json();
+                
+                if (aiResult.success) {
+                    // Créer le ticket avec les données IA
+                    const ticketResponse = await fetch('/api/tickets', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ title, description })
+                    });
+                    
+                    const ticketResult = await ticketResponse.json();
+                    
+                    if (ticketResult.success) {
+                        showNotification(ticketResult.message, 'success');
+                        hideCreateTicket();
+                        loadTickets(); // Recharger la liste
+                    } else {
+                        showNotification('Erreur lors de la création du ticket', 'error');
+                    }
+                } else {
+                    showNotification('Erreur lors de la classification IA', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erreur création ticket:', error);
+                showNotification('Erreur de connexion', 'error');
+            }
+        });
+
+        // Appliquer les filtres
+        function applyFilters() {
+            // Pour la démo, on recharge simplement les tickets
+            loadTickets();
+        }
+
+        // Voir un ticket
+        function viewTicket(id) {
+            showNotification(`Ouverture du ticket #${id}`, 'info');
+        }
+
+        // Système de notifications
+        function showNotification(message, type = 'info') {
+            const colors = {
+                'success': 'bg-green-500',
+                'error': 'bg-red-500',
+                'info': 'bg-blue-500',
+                'warning': 'bg-yellow-500'
+            };
+
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+
+            // Auto-remove après 5 secondes
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
+
