@@ -43,3 +43,6 @@ app.post('/api/ai/chat', async (req, res) => {
 app.listen(port, () => {
   console.log(`✅ Serveur lancé sur http://localhost:${port}`);
 });
+app.get('/', (req, res) => {
+  res.send('🤖 Serveur IA opérationnel ! Utilisez POST /api/ai/chat pour dialoguer.');
+});
