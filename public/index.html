@@ -496,37 +496,20 @@
         
         // Load tickets
         async function loadTickets() {
-            try {
-                const response = await fetch('/api/tickets');
-                const tickets = await response.json();
-                
-                const tbody = document.getElementById('ticketsTableBody');
-                tbody.innerHTML = tickets.map(ticket => `
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#${ticket.id}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${ticket.title}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                ${ticket.category}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPriorityColor(ticket.priority)}">
-                                ${ticket.priority}/5
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(ticket.status)}">
-                                ${ticket.status}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(ticket.created_at).toLocaleDateString()}</td>
-                    </tr>
-                `).join('');
-            } catch (error) {
-                console.error('Erreur chargement tickets:', error);
-            }
+    try {
+        const response = await fetch('/api/tickets');
+        if (response.ok) {
+            tickets = await response.json();
+            displayTickets();
+            
+            // CORRECTION CRITIQUE: Mise à jour des stats depuis les tickets
+            updateStatsFromTickets();
         }
+    } catch (error) {
+        console.error('Erreur lors du chargement des tickets:', error);
+        displayTickets();
+    }
+}
         
         function getPriorityColor(priority) {
             if (priority >= 4) return 'bg-red-100 text-red-800';
