@@ -151,59 +151,59 @@
         <!-- Dashboard Content -->
         <main class="p-6">
             <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="stat-card rounded-xl p-6 text-white card-hover">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-white text-opacity-80 text-sm">Total Tickets</p>
-                            <p class="text-3xl font-bold">42</p>
-                            <p class="text-white text-opacity-80 text-xs mt-1">+12% ce mois</p>
-                        </div>
-                        <div class="bg-white bg-opacity-20 rounded-lg p-3">
-                            <i class="fas fa-ticket-alt text-2xl"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="stat-card-2 rounded-xl p-6 text-white card-hover">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-white text-opacity-80 text-sm">En Attente</p>
-                            <p class="text-3xl font-bold">8</p>
-                            <p class="text-white text-opacity-80 text-xs mt-1">-5% vs hier</p>
-                        </div>
-                        <div class="bg-white bg-opacity-20 rounded-lg p-3">
-                            <i class="fas fa-clock text-2xl"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="stat-card-3 rounded-xl p-6 text-white card-hover">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-white text-opacity-80 text-sm">Résolus</p>
-                            <p class="text-3xl font-bold">34</p>
-                            <p class="text-white text-opacity-80 text-xs mt-1">+18% ce mois</p>
-                        </div>
-                        <div class="bg-white bg-opacity-20 rounded-lg p-3">
-                            <i class="fas fa-check-circle text-2xl"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="stat-card-4 rounded-xl p-6 text-white card-hover">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-white text-opacity-80 text-sm">IA Confiance</p>
-                            <p class="text-3xl font-bold">94%</p>
-                            <p class="text-white text-opacity-80 text-xs mt-1">+3% précision</p>
-                        </div>
-                        <div class="bg-white bg-opacity-20 rounded-lg p-3">
-                            <i class="fas fa-brain text-2xl"></i>
-                        </div>
-                    </div>
-                </div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="stat-card rounded-xl p-6 text-white card-hover">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-white text-opacity-80 text-sm">Total Tickets</p>
+                <p class="text-3xl font-bold" id="totalTickets">0</p>
+                <p class="text-white text-opacity-80 text-xs mt-1">+12% ce mois</p>
             </div>
+            <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                <i class="fas fa-ticket-alt text-2xl"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stat-card-2 rounded-xl p-6 text-white card-hover">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-white text-opacity-80 text-sm">En Attente</p>
+                <p class="text-3xl font-bold" id="pendingTickets">0</p>
+                <p class="text-white text-opacity-80 text-xs mt-1">-5% vs hier</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                <i class="fas fa-clock text-2xl"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stat-card-3 rounded-xl p-6 text-white card-hover">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-white text-opacity-80 text-sm">Résolus</p>
+                <p class="text-3xl font-bold" id="resolvedTickets">0</p>
+                <p class="text-white text-opacity-80 text-xs mt-1">+18% ce mois</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                <i class="fas fa-check-circle text-2xl"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stat-card-4 rounded-xl p-6 text-white card-hover">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-white text-opacity-80 text-sm">IA Confiance</p>
+                <p class="text-3xl font-bold" id="aiConfidence">94%</p>
+                <p class="text-white text-opacity-80 text-xs mt-1">+3% précision</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                <i class="fas fa-brain text-2xl"></i>
+            </div>
+        </div>
+    </div>
+</div>
             
             <!-- Action Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -374,258 +374,297 @@
     </div>
     
     <script>
-        // Mobile menu functionality
-        const sidebar = document.getElementById('sidebar');
-        const mobileOverlay = document.getElementById('mobileOverlay');
-        const openSidebar = document.getElementById('openSidebar');
-        const closeSidebar = document.getElementById('closeSidebar');
-        
-        openSidebar.addEventListener('click', () => {
-            sidebar.classList.remove('mobile-menu-closed');
-            sidebar.classList.add('mobile-menu-open');
-            mobileOverlay.classList.remove('hidden');
-        });
-        
-        closeSidebar.addEventListener('click', () => {
-            sidebar.classList.remove('mobile-menu-open');
-            sidebar.classList.add('mobile-menu-closed');
-            mobileOverlay.classList.add('hidden');
-        });
-        
-        mobileOverlay.addEventListener('click', () => {
-            sidebar.classList.remove('mobile-menu-open');
-            sidebar.classList.add('mobile-menu-closed');
-            mobileOverlay.classList.add('hidden');
-        });
-        
-        // Modal functions
-        function showNewTicketModal() {
-            document.getElementById('newTicketModal').classList.remove('hidden');
-        }
-        
-        function closeNewTicketModal() {
-            document.getElementById('newTicketModal').classList.add('hidden');
-        }
-        
-        function showTestAIModal() {
-            document.getElementById('testAIModal').classList.remove('hidden');
-        }
-        
-        function closeTestAIModal() {
-            document.getElementById('testAIModal').classList.add('hidden');
-            document.getElementById('aiResult').classList.add('hidden');
-        }
-        
-        function closeWeatherModal() {
-            document.getElementById('weatherModal').classList.add('hidden');
-        }
-        
-        // AI Classification Test
-        async function testAIClassification() {
-            const description = document.getElementById('testDescription').value;
-            if (!description.trim()) return;
-            
-            try {
-                const response = await fetch('/api/ai/classify', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: description })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    document.getElementById('aiResult').innerHTML = `
-                        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-                            <h4 class="font-semibold text-green-800 mb-2">Résultat de l'IA</h4>
-                            <div class="space-y-2 text-sm">
-                                <div><strong>Catégorie:</strong> ${result.category}</div>
-                                <div><strong>Priorité:</strong> ${result.priority}/5</div>
-                                <div><strong>Confiance:</strong> ${result.confidence}%</div>
-                                <div><strong>Temps estimé:</strong> ${result.estimated_time}</div>
-                            </div>
-                        </div>
-                    `;
-                    document.getElementById('aiResult').classList.remove('hidden');
-                }
-            } catch (error) {
-                console.error('Erreur IA:', error);
+    // Variables globales
+    let tickets = [];
+    
+    // Mobile menu functionality
+    const sidebar = document.getElementById('sidebar');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+    const openSidebar = document.getElementById('openSidebar');
+    const closeSidebar = document.getElementById('closeSidebar');
+    
+    openSidebar.addEventListener('click', () => {
+        sidebar.classList.remove('mobile-menu-closed');
+        sidebar.classList.add('mobile-menu-open');
+        mobileOverlay.classList.remove('hidden');
+    });
+    
+    closeSidebar.addEventListener('click', () => {
+        sidebar.classList.remove('mobile-menu-open');
+        sidebar.classList.add('mobile-menu-closed');
+        mobileOverlay.classList.add('hidden');
+    });
+    
+    mobileOverlay.addEventListener('click', () => {
+        sidebar.classList.remove('mobile-menu-open');
+        sidebar.classList.add('mobile-menu-closed');
+        mobileOverlay.classList.add('hidden');
+    });
+    
+    // Modal functions
+    function showNewTicketModal() {
+        document.getElementById('newTicketModal').classList.remove('hidden');
+    }
+    
+    function closeNewTicketModal() {
+        document.getElementById('newTicketModal').classList.add('hidden');
+        document.getElementById('newTicketForm').reset();
+    }
+    
+    function showTestAIModal() {
+        document.getElementById('testAIModal').classList.remove('hidden');
+    }
+    
+    function closeTestAIModal() {
+        document.getElementById('testAIModal').classList.add('hidden');
+        document.getElementById('aiResult').classList.add('hidden');
+    }
+    
+    function closeWeatherModal() {
+        document.getElementById('weatherModal').classList.add('hidden');
+    }
+    
+    // Chargement des tickets
+    async function loadTickets() {
+        try {
+            const response = await fetch('/api/tickets');
+            if (response.ok) {
+                tickets = await response.json();
+                displayTickets();
+                updateStats();
             }
-        }
-        
-        // Weather Check
-        async function checkWeather() {
-            document.getElementById('weatherModal').classList.remove('hidden');
-            
-            try {
-                const response = await fetch('/api/weather/Zurich');
-                const weather = await response.json();
-                
-                document.getElementById('weatherContent').innerHTML = `
-                    <div class="text-center">
-                        <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-cloud text-blue-600 text-2xl"></i>
-                        </div>
-                        <h4 class="text-xl font-semibold mb-2">Zurich</h4>
-                        <div class="text-3xl font-bold text-gray-800 mb-2">${weather.temperature}°C</div>
-                        <div class="text-gray-600 mb-4">${weather.condition}</div>
-                        <div class="grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                                <div class="text-gray-500">Vent</div>
-                                <div class="font-semibold">${weather.wind_speed} km/h</div>
-                            </div>
-                            <div>
-                                <div class="text-gray-500">Humidité</div>
-                                <div class="font-semibold">${weather.humidity}%</div>
-                            </div>
-                        </div>
-                        <div class="mt-4 text-xs text-gray-500">
-                            Source: ${weather.source}
-                        </div>
-                    </div>
-                `;
-            } catch (error) {
-                document.getElementById('weatherContent').innerHTML = `
-                    <div class="text-center text-red-600">
-                        <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
-                        <p>Erreur lors du chargement des données météo</p>
-                    </div>
-                `;
-            }
-        }
-        
-        // Load tickets
-        async function loadTickets() {
-    try {
-        const response = await fetch('/api/tickets');
-        if (response.ok) {
-            tickets = await response.json();
+        } catch (error) {
+            console.error('Erreur lors du chargement des tickets:', error);
+            // Afficher des données de démonstration
+            tickets = [
+                { id: 1, title: 'Fuite robinet cuisine', description: 'Le robinet fuit', category: 'Plomberie', priority: 4, status: 'en_cours', created_at: new Date().toISOString() },
+                { id: 2, title: 'Problème chauffage', description: 'Pas de chauffage', category: 'Chauffage', priority: 3, status: 'nouveau', created_at: new Date().toISOString() }
+            ];
             displayTickets();
-            
-            // CORRECTION CRITIQUE: Mise à jour des stats depuis les tickets
-            updateStatsFromTickets();
+            updateStats();
         }
-    } catch (error) {
-        console.error('Erreur lors du chargement des tickets:', error);
-        displayTickets();
     }
-}
+    
+    // Mise à jour des statistiques
+    function updateStats() {
+        const total = tickets.length;
+        const pending = tickets.filter(t => 
+            t.status === 'nouveau' || 
+            t.status === 'en_cours' || 
+            t.status === 'assigné'
+        ).length;
+        const resolved = tickets.filter(t => 
+            t.status === 'resolu' || 
+            t.status === 'résolu'
+        ).length;
+        const avgConfidence = tickets.length > 0 
+            ? Math.round(tickets.reduce((sum, t) => sum + (t.ai_confidence || 94), 0) / tickets.length)
+            : 94;
         
-        function getPriorityColor(priority) {
-            if (priority >= 4) return 'bg-red-100 text-red-800';
-            if (priority >= 3) return 'bg-yellow-100 text-yellow-800';
-            return 'bg-green-100 text-green-800';
+        // Mise à jour des éléments DOM
+        document.getElementById('totalTickets').textContent = total;
+        document.getElementById('pendingTickets').textContent = pending;
+        document.getElementById('resolvedTickets').textContent = resolved;
+        document.getElementById('aiConfidence').textContent = avgConfidence + '%';
+    }
+    
+    // Affichage des tickets
+    function displayTickets() {
+        const tbody = document.getElementById('ticketsTableBody');
+        
+        if (tickets.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                        Aucun ticket trouvé
+                    </td>
+                </tr>
+            `;
+            return;
         }
         
-        function getStatusColor(status) {
-            switch (status) {
-                case 'Nouveau': return 'bg-blue-100 text-blue-800';
-                case 'En cours': return 'bg-yellow-100 text-yellow-800';
-                case 'Résolu': return 'bg-green-100 text-green-800';
-                default: return 'bg-gray-100 text-gray-800';
+        tbody.innerHTML = tickets.map(ticket => `
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    #${ticket.id}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    ${ticket.title}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                        ${ticket.category || 'Non classé'}
+                    </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPriorityColor(ticket.priority)}">
+                        ${ticket.priority}/5
+                    </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(ticket.status)}">
+                        ${getStatusLabel(ticket.status)}
+                    </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    ${new Date(ticket.created_at).toLocaleDateString('fr-FR')}
+                </td>
+            </tr>
+        `).join('');
+    }
+    
+    function getStatusLabel(status) {
+        const labels = {
+            'nouveau': 'Nouveau',
+            'en_cours': 'En cours',
+            'assigné': 'Assigné',
+            'resolu': 'Résolu',
+            'résolu': 'Résolu'
+        };
+        return labels[status] || status;
+    }
+    
+    function getPriorityColor(priority) {
+        if (priority >= 4) return 'bg-red-100 text-red-800';
+        if (priority >= 3) return 'bg-yellow-100 text-yellow-800';
+        return 'bg-green-100 text-green-800';
+    }
+    
+    function getStatusColor(status) {
+        switch (status) {
+            case 'nouveau': return 'bg-blue-100 text-blue-800';
+            case 'en_cours': return 'bg-yellow-100 text-yellow-800';
+            case 'assigné': return 'bg-purple-100 text-purple-800';
+            case 'resolu':
+            case 'résolu': return 'bg-green-100 text-green-800';
+            default: return 'bg-gray-100 text-gray-800';
+        }
+    }
+    
+    // AI Classification Test
+    async function testAIClassification() {
+        const description = document.getElementById('testDescription').value;
+        if (!description.trim()) return;
+        
+        try {
+            const response = await fetch('/api/ai/classify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: description })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                document.getElementById('aiResult').innerHTML = `
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <h4 class="font-semibold text-green-800 mb-2">Résultat de l'IA</h4>
+                        <div class="space-y-2 text-sm">
+                            <div><strong>Catégorie:</strong> ${result.category}</div>
+                            <div><strong>Priorité:</strong> ${result.priority}/5</div>
+                            <div><strong>Confiance:</strong> ${result.confidence}%</div>
+                            <div><strong>Temps estimé:</strong> ${result.estimatedTime}</div>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('aiResult').classList.remove('hidden');
             }
+        } catch (error) {
+            console.error('Erreur IA:', error);
         }
+    }
+    
+    // Weather Check
+    async function checkWeather() {
+        document.getElementById('weatherModal').classList.remove('hidden');
         
-        // New ticket form
-        document.getElementById('newTicketForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        try {
+            const response = await fetch('/api/weather/Zurich');
+            const weather = await response.json();
             
-            const title = document.getElementById('ticketTitle').value;
-            const description = document.getElementById('ticketDescription').value;
+            document.getElementById('weatherContent').innerHTML = `
+                <div class="text-center">
+                    <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-cloud text-blue-600 text-2xl"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-2">Zurich</h4>
+                    <div class="text-3xl font-bold text-gray-800 mb-2">${weather.temperature}°C</div>
+                    <div class="text-gray-600 mb-4">${weather.condition}</div>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <div class="text-gray-500">Vent</div>
+                            <div class="font-semibold">${weather.wind_speed} km/h</div>
+                        </div>
+                        <div>
+                            <div class="text-gray-500">Humidité</div>
+                            <div class="font-semibold">${weather.humidity}%</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-xs text-gray-500">
+                        Source: ${weather.source}
+                    </div>
+                </div>
+            `;
+        } catch (error) {
+            document.getElementById('weatherContent').innerHTML = `
+                <div class="text-center text-red-600">
+                    <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                    <p>Erreur lors du chargement des données météo</p>
+                </div>
+            `;
+        }
+    }
+    
+    // New ticket form submission
+    document.getElementById('newTicketForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const title = document.getElementById('ticketTitle').value;
+        const description = document.getElementById('ticketDescription').value;
+        
+        try {
+            const response = await fetch('/api/tickets', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, description })
+            });
             
-            try {
-                const response = await fetch('/api/tickets', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title, description })
+            const result = await response.json();
+            
+            if (response.ok) {
+                // Ajouter le nouveau ticket à la liste locale
+                tickets.unshift({
+                    id: result.id || Date.now(),
+                    title: title,
+                    description: description,
+                    category: result.category || 'Non classé',
+                    priority: result.priority || 3,
+                    status: 'nouveau',
+                    created_at: new Date().toISOString(),
+                    ai_confidence: result.confidence || 94
                 });
                 
-                if (response.ok) {
-                    closeNewTicketModal();
-                    loadTickets();
-                    document.getElementById('newTicketForm').reset();
-                }
-            } catch (error) {
-                console.error('Erreur création ticket:', error);
+                // Mettre à jour l'affichage
+                displayTickets();
+                updateStats();
+                
+                // Fermer le modal et réinitialiser le formulaire
+                closeNewTicketModal();
+                document.getElementById('newTicketForm').reset();
+                
+                // Notification de succès (optionnel)
+                console.log('✅ Ticket créé avec succès!');
             }
-        });
-        
-        // Load initial data
-        loadTickets();
-   // NOUVELLE FONCTION: Mise à jour des stats depuis les tickets
-function updateStatsFromTickets() {
-    const total = tickets.length;
-    const pending = tickets.filter(t => 
-        t.status === 'En cours' || 
-        t.status === 'Nouveau' || 
-        t.status === 'Assigné'
-    ).length;
-    const resolved = tickets.filter(t => 
-        t.status === 'Résolu' || 
-        t.status === 'Fermé'
-    ).length;
-
-    // Mise à jour des éléments HTML
-    const totalElement = document.getElementById('totalTickets') || 
-                         document.querySelector('.total-tickets');
-    const pendingElement = document.getElementById('pendingTickets') || 
-                           document.querySelector('.pending-tickets');
-    const resolvedElement = document.getElementById('resolvedTickets') || 
-                            document.querySelector('.resolved-tickets');
-    
-    if (totalElement) totalElement.textContent = total;
-    if (pendingElement) pendingElement.textContent = pending;
-    if (resolvedElement) resolvedElement.textContent = resolved;
-}
-// NOUVELLE FONCTION: Création de ticket avec rechargement
-async function createTicket() {
-    const title = document.getElementById('ticketTitle').value;
-    const description = document.getElementById('ticketDescription').value;
-    
-    if (!title || !description) {
-        alert('Veuillez remplir tous les champs');
-        return;
-    }
-    
-    try {
-        const response = await fetch('/api/tickets', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                title: title,
-                description: description,
-                tenant: 'Utilisateur',
-                apartment: 'Web'
-            })
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            // Fermer le modal
-            const modal = document.getElementById('ticketModal');
-            if (modal) modal.style.display = 'none';
-            
-            // CORRECTION CRITIQUE: Recharger toutes les données
-            await loadTickets();
-            await loadStats();
-            
-            alert(`✅ Ticket créé avec succès !
-🤖 Classification IA :
-• Catégorie: ${result.aiClassification?.category || 'Non définie'}
-• Priorité: ${result.aiClassification?.priority || 'Non définie'}/5
-• Confiance: ${result.aiClassification?.confidence || 'Non définie'}%`);
-        } else {
-            alert('❌ Erreur lors de la création du ticket');
+        } catch (error) {
+            console.error('Erreur création ticket:', error);
         }
-    } catch (error) {
-        console.error('Erreur:', error);
-        alert('❌ Erreur de connexion');
-    }
-}
- </script>
+    });
+    
+    // Initialisation au chargement
+    document.addEventListener('DOMContentLoaded', () => {
+        loadTickets();
+    });
+</script>
 </body>
 </html>
 
